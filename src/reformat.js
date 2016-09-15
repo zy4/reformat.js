@@ -5,148 +5,10 @@
 
  */
 
-function readFastaText(fastaText){
-
-    // clean header from multiple occurences of > identifiers, will be missing in output for now.
-    var newlines = fastaText.split('\n');
-    for(var k = 0;k < newlines.length;k++){
-        if ((newlines[k].match(/>/g)||[]).length > 1) {
-            newlines[k] = newlines[k].replace(/(?!^)>/g, '');
-        }
-    }
-
-    fastaText = newlines.join('\n');
-
-
-    var splittedStrings = fastaText.split(">"),
-        result = [],
-        i = 1;
-
-    for (; i < splittedStrings.length; i++) {
-
-        result.push(new readFastaLine(splittedStrings[i]));
-
-    }
-
-
-    return result;
-}
-
-
-function printFastaObj(obj) {
-
-    result = [];
-
-    for(var i=0;i<obj.length;i++){
-        result +=">";
-        result += obj[i].name;
-        result += "\n";
-        result += obj[i].seq;
-        result += "\n";
-    }
-
-    return result;
-}
-
-
-function readA3mText(a3mtext){
-
-
-    // clean header from multiple occurences of > identifiers, will be missing in output for now.
-    var newlines = a3mtext.split('\n');
-    for(var k = 0;k < newlines.length;k++){
-        if ((newlines[k].match(/>/g)||[]).length > 1) {
-            newlines[k] = newlines[k].replace(/(?!^)>/g, '');
-        }
-    }
-
-    a3mtext = newlines.join('\n');
 
 
 
-    var splittedStrings = a3mtext.split(">"),
-        result = [],
-        i = 1;
 
-    for (; i < splittedStrings.length; i++) {
-
-        result += ">";
-        console.log(splittedStrings[0]);
-        result += readA3mLine(splittedStrings[i]).name;
-        result += "\n";
-        result += readA3mLine(splittedStrings[i]).seq;
-        result += "\n";
-
-    }
-
-    return result;
-
-}
-
-
-function readA3mLine(a3mline){
-
-    var splittedStrings,
-        result,
-        i = 1;
-
-    result = {};
-    splittedStrings = a3mline.split('\n')
-    result.name = splittedStrings[0];
-
-    result.seq = '';
-    for (; i < splittedStrings.length; i++) {
-        result.seq += splittedStrings[i];
-    }
-    return result;
-
-}
-
-
-function printClustalText(fastaText){
-
-
-    // clean header from multiple occurences of > identifiers, will be missing in output for now.
-    var newlines = fastaText.split('\n');
-    //console.log(newlines);
-    for(var k = 0;k < newlines.length;k++){
-        if ((newlines[k].match(/>/g)||[]).length > 1) {
-            newlines[k] = newlines[k].replace(/(?!^)>/g, '');
-        }
-    }
-
-    fastaText = newlines.join('\n');
-
-    var splittedStrings = fastaText.split(">"),
-        result = [],
-        i = 1,
-        j = 0;
-
-    result += "CLUSTAL multiple sequence alignment";
-    result += "\n\n";
-
-    for (; j < Math.trunc(getClustalSeq(splittedStrings[i]).length/60) + 1 ; j++){
-
-        for (; i < splittedStrings.length; i++) {
-
-            result += getClustalHeader(splittedStrings[i]);
-            result += "\t";
-            result += chunkString(getClustalSeq(splittedStrings[i]), 60)[j];
-            result += "\n";
-
-        }
-
-        result += "\n\n";
-        i = 1;
-
-    }
-
-    result = result.slice(0, -3); //removes trailing whitespaces at EOF
-    result += "\n"; // hack for codemirror cursor bug with atomic ranges
-
-
-    return result;
-}
 
 
 function getGIs(fastaText){
@@ -182,22 +44,6 @@ function getAccessionversion(json){
     return result;
 }
 
-function readFastaLine(fastaLine) {
-
-    var splittedStrings  = fastaLine.split('\n'),
-        result = {},
-        i = 1;
-
-    //if (splittedStrings[0].charAt(12) === '|'){
-    result.name = splittedStrings[0].substr(0, 28);
-    //else { result.name = splittedStrings[0].substr(0, 11) + ' '; }
-
-    result.seq = '';
-    for (; i < splittedStrings.length; i++) {
-        result.seq += splittedStrings[i];
-    }
-    return result;
-}
 
 
 function getClustalSeq (fastaLine) {
@@ -228,18 +74,6 @@ function chunkString(str, len) {
     return _ret;
 }
 
-
-function printAsJSON(source) {
-
-    return JSON.stringify(readFastaText(source));
-
-}
-
-function clustalAsJSON(source){
-
-    return JSON.stringify(clustalParser(source));
-
-}
 
 
 function clustal2Fasta(text) {
@@ -577,41 +411,6 @@ function validateClustal (clustal) {
     return true;
 }
 
-
-function validateA2m(a2m) {
-
-    if ((a2m.indexOf('.') != -1) && (validateFasta(a2m)))
-        return true;
-}
-
-function validateAlignmentFasta(aln) {
-    if(!aln)
-        return false;
-    // check whether a fasta input is an alignment. This will be useful for validating whether we can directly
-    // convert from fasta to clustal. if not -> suggest forwarding to Muscle.
-    if(aln.startsWith(">")) {
-        var fastaObj = readFastaText(aln);
-        var firstlength = fastaObj[0].seq.length;
-
-
-        for (var i = 0; i < fastaObj.length; i++) {
-
-            if (fastaObj[i].seq.length !== firstlength) {
-                console.log("input is not an alignment");
-                if (_contains(fastaObj[i].seq, "-")) {
-
-                    console.log("warning: input contains dashes without being an alignment")
-                }
-                return false;
-            }
-
-        }
-
-        console.log("this is an alignment");
-        return true;
-    }
-    return false;
-}
 
 
 function aminoCount(seq) {
