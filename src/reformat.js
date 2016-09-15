@@ -6,11 +6,6 @@
  */
 
 
-
-
-
-
-
 function getGIs(fastaText){
 
     var splittedStrings = fastaText.split(">"),
@@ -45,14 +40,6 @@ function getAccessionversion(json){
 }
 
 
-
-function getClustalSeq (fastaLine) {
-
-    var fasta = readFastaLine(fastaLine);
-    return fasta.seq;
-
-}
-
 function getClustalHeader (fastaLine) {
 
     var fasta = readFastaLine(fastaLine);
@@ -73,27 +60,6 @@ function chunkString(str, len) {
 
     return _ret;
 }
-
-
-
-function clustal2Fasta(text) {
-
-    var clustalObj = clustalParser(text),
-        result = [];
-
-
-    for(var i=0;i<clustalObj.length;i++){
-        result +=">";
-        result += clustalObj[i].untrimmed;
-        result += "\n";
-        result += clustalObj[i].seq;
-        result += "\n";
-    }
-
-    return result;
-
-}
-
 
 function _contains(text, search) {
     return ''.indexOf.call(text, search, 0) !== -1;
@@ -155,7 +121,6 @@ function clustalParser(text) {
                 }
                 seqCounter++;
             } else {
-                //console.log("clustal parse error, maybe fasta?", line);
             }
         }
     }
@@ -230,11 +195,9 @@ function getMeta(label) {
                 if ( current_key ) {
                     var key = current_key.toLowerCase();
                     details[ key ] = value;
-                    //console.log( "details[" + key + "] = " + value );
                 }
                 else {
                     description = value;
-                    //console.log( "description=" + value );
                 }
                 current_key = next_key;
             });
@@ -280,16 +243,6 @@ function validateFasta(fasta) {
 
     var newlines = fasta.split('\n');
     if (!newlines[0].startsWith("#") && newlines[0].startsWith(">")) {
-        /*
-         for(var k = 0;k < newlines.length;k++){
-         if ((newlines[k].match(/>/g)||[]).length > 1) {
-         throw new Error("warning, header has more than one > identifier. file corrupt?");
-         return false;
-         }
-
-         }
-         */
-        //fasta = newlines.join('\n');
 
         if (!fasta.startsWith('>')) {
             return false;
@@ -298,15 +251,9 @@ function validateFasta(fasta) {
             return false;
         }
 
-
-
-
         var splittedStrings = fasta.split(">"),
             i = 1;
 
-
-
-        //console.log(splittedStrings);
         for (; i < splittedStrings.length; i++) {
 
             // only pir format has a ';' as the 4. char
@@ -329,7 +276,7 @@ function validateFasta(fasta) {
             }
 
             // join the array back into a single string without newlines and
-            // trailing or leading spaces
+
             seq = lines.join('').trim();
 
             if (/[^\-\\ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(seq)) {
@@ -379,12 +326,6 @@ function validateClustal (clustal) {
                 console.log('More than 60 sequence symbols in one line');
                 return false;
             }
-
-
-
-
-
-
 
         } else {
             header = sequence.trim().replace(' ', '');
@@ -452,27 +393,6 @@ function fastaToUpperCase(fas) {
 
 /* transform clustal sequences to lowercase and returns parsed json object */
 
-function clustalToLowerCase(clu) {
-
-    var clustalObj = clustalParser(clu);
-    for (var i = 0; i<clustalObj.length; i++) {
-        clustalObj[i].seq = clustalObj[i].seq.toLowerCase();
-    }
-    return clustalObj;
-}
-
-
-/* transform clustal sequences to uppercase and returns parsed json object */
-
-function clustalToUpperCase(clu) {
-
-    var clustalObj = clustalParser(clu);
-    for (var i = 0; i<clustalObj.length; i++) {
-        clustalObj[i].seq = clustalObj[i].seq.toUpperCase();
-    }
-    return clustalObj;
-}
-
 
 function conservation(aln) {
 
@@ -487,54 +407,6 @@ function getNumberOfFastaSeqs(fas) {
 }
 
 
-function getNumberOfClustalSeqs(clustal) {
-
-    var clustalObj = clustalParser(clustal);
-    return clustalObj.length;
-
-}
-
-function validateClustalUpperCase(clu){
-
-    var clustalObj = clustalParser(clu);
-    for (var i = 0; i<clustalObj.length; i++) {
-        if((/[a-z]/.test(clustalObj[i].seq)))
-            return false;
-    }
-    return true;
-
-}
-
-function validateClustalLowerCase(clu){
-
-    var clustalObj = clustalParser(clu);
-    for (var i = 0; i<clustalObj.length; i++) {
-        if((/[A-Z]/.test(clustalObj[i].seq)))
-            return false;
-    }
-    return true;
-}
-
-function validateFastaUpperCase(fas){
-
-    var fastaObj = readFastaText(fas);
-    for (var i = 0; i<fastaObj.length; i++) {
-        if((/[a-z]/.test(fastaObj[i].seq)))
-            return false;
-    }
-    return true;
-}
-
-function validateFastaLowerCase(fas){
-
-    var fastaObj = readFastaText(fas);
-    for (var i = 0; i<fastaObj.length; i++) {
-        if((/[A-Z]/.test(fastaObj[i].seq)))
-            return false;
-    }
-    return true;
-
-}
 
 
 function addSpaceEveryNChars(str, n) {
@@ -918,7 +790,7 @@ function clustal2json(clustal){
                 }
                 seqCounter++;
             } else {
-                //console.log("clustal parse error, maybe fasta?", line);
+                console.log("clustal parse error");
             }
         }
     }
@@ -956,7 +828,7 @@ function json2clustal(clustal){
         i = 0;
 
     }
-    result += "\n"; // hack for codemirror cursor bug with atomic ranges
+    result += "\n";
 
     return result;
 
@@ -1535,56 +1407,6 @@ function json2genbank(json){
 
     return result;
 
-}
-function searchRegex(text, regex, flag) {
-
-    return new Promise(function(resolve, reject){
-        if (!text) {
-            reject("");
-        }
-        if (regex == "") {
-            reject("");
-        }
-
-        var result = [], matches, split, reg, beginHit, endHit, tmp, lastBeginHit, lastEndHit;
-        console.log("matches" + regex)
-        split = text.split('\n');
-        // remove empty lines
-
-        split = split.filter(Boolean);
-
-        reg = new RegExp(regex, flag);
-        if (reg != null) {
-
-            for (var i = 0; i < split.length; i++) {
-
-                if (split[i].match(reg) != null) {
-                    beginHit = -2;
-                    endHit = -2;
-
-                    result += i + '\t\t\t';
-                    matches = split[i].match(reg);
-
-                    tmp = split[i];
-                    lastBeginHit = 0;
-                    lastEndHit = 0;
-                    for (var j = 0; j < matches.length; j++) {
-                        beginHit = tmp.indexOf(matches[j], endHit + 2);
-                        endHit = tmp.indexOf(matches[j], endHit + 2) + matches[j].length - 1;
-                        tmp = tmp.substr(0, beginHit) + '\'' + tmp.match(reg)[j] + '\'' + tmp.substr(endHit + 1);
-                        lastBeginHit = beginHit;
-                        lastEndHit = endHit;
-                    }
-                    result += tmp;
-                    result += '\n';
-
-                }
-            }
-
-            resolve(result);
-        }
-        reject("");
-    });
 }
 
 function typeOfSequence(json) {
