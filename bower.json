@@ -1,0 +1,18 @@
+{
+  "name": "reformat.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/zy4/reformat.js",
+  "authors": [
+    "Seung-Zin Nam <zin@posteo.de>",
+    "David Rau <david.rau@tuebingen.mpg.de>"
+  ],
+  "description": "bioinformatics format converter",
+  "main": "src/reformat.js",
+  "keywords": [
+    "alignment",
+    "tool",
+    "converter",
+    "BioJS"
+  ],
+  "license": "MIT"
+}
