@@ -7,27 +7,24 @@
 
 
 
-function getGIs(fastaText){
+function getGIs(json){
 
-    var splittedStrings = fastaText.split(">"),
-        result = [],
-        i = 1;
+    var result = "";
 
-    for (; i < splittedStrings.length; i++) {
+    for (var i =0 ; i < json.length; i++) {
 
-        if (splittedStrings[i].substring(0,3) == 'gi|') {
-            result += splittedStrings[i].substring(3).split('|')[0];
+        if (json.name[i].substring(0,3) == 'gi|') {
+            result += json.name[i].substring(3).split('|')[0];
             result += "\n";
-
         }
     }
-
     return result;
 }
 
 
 
-function getAccessionversion(json){
+function getAccessionVersion(json){
+
     var result= '';
     for (var i= 0; i < json.length; i++) {
         var split = json[i].name.split(/\s/g);
@@ -360,28 +357,31 @@ function aminoCount(seq) {
     return uni;
 }
 
-/* transform fasta sequences to lowercase and returns parsed json object */
 
-function fastaToLowerCase(fas) {
-
-    var fastaObj = readFastaText(fas);
-    for (var i = 0; i<fastaObj.length; i++) {
-        fastaObj[i].seq = fastaObj[i].seq.toLowerCase();
+/**
+ * reformats JSON.seqs to lower case
+ * @param json
+ * @returns {JSON} object
+ */
+function lowerCase(json) {
+    for (var i = 0; i<json.length; i++) {
+        json[i].seq = json[i].seq.toLowerCase();
     }
-    return fastaObj;
+    return json;
 
 }
 
+/**
+ * reformats JSON.seqs to upper case
+ * @param json
+ * @returns {JSON} object
+ */
+function upperCase(json) {
 
-/* transform fasta sequences to uppercase and returns parsed json object */
-
-function fastaToUpperCase(fas) {
-
-    var fastaObj = readFastaText(fas);
-    for (var i = 0; i<fastaObj.length; i++) {
-        fastaObj[i].seq = fastaObj[i].seq.toUpperCase();
+    for (var i = 0; i<json.length; i++) {
+        json[i].seq = json[i].seq.toUpperCase();
     }
-    return fastaObj;
+    return json;
 
 }
 
@@ -1419,7 +1419,44 @@ function typeOfSequence(json) {
 }
 
 
-function getFormat(seqs){
+function searchRegex(json, regex, flag) {
+    if (!json) {
+        return;
+    }
+    if (!regex) {
+        return;
+    }
+    var matches, reg, beginHit, endHit, result = [];
+    reg = new RegExp(regex, flag);
+
+    for (var i = 0; i < json.length; i++) {
+
+        if (json[i].seq.match(reg) != null) {
+            var element = {};
+            beginHit = 0;
+            endHit = 0;
+
+            matches = json[i].seq.match(reg);
+            var hit = [];
+            for (var j = 0; j < matches.length; j++) {
+                var hitElement = {};
+                beginHit = json[i].seq.indexOf(matches[j], endHit+1);
+                endHit = json[i].seq.indexOf(matches[j], endHit+1) + matches[j].length - 1;
+                hitElement.endPos = beginHit;
+                hitElement.startPos = endHit;
+                hit.push(hitElement);
+            }
+
+            element.seq = json[i].seq;
+            element.name = json[i].name;
+            element.hit = hit;
+            result.push(element);
+        }
+    }
+    return result;
+}
+
+    function getFormat(seqs){
     if(validateFasta(seqs))
         return "Fasta";
     else if(validatea3m(seqs))
@@ -1452,10 +1489,10 @@ function getFormat(seqs){
 
 (function( $ ){
 
-    $.fn.reformat = function(targetFormat){
+    $.fn.reformat = function(operation, parameter1, parameter2){
         var seqs = this.val();
         var format = getFormat(seqs);
-        targetFormat = targetFormat.toUpperCase();
+        operation = operation.toUpperCase();
         var json = [];
         var result ="";
         switch(format) {
@@ -1489,7 +1526,7 @@ function getFormat(seqs){
             default:json = null;
         }
 
-        switch(targetFormat) {
+        switch(operation) {
             case "FASTA":
                 result = json2fasta(json);
                 break;
@@ -1517,7 +1554,23 @@ function getFormat(seqs){
             case "STOCKHOLM":
                 result = json2stockholm(json);
                 break;
+            case "UC":
+                result = upperCase(json);
+                break;
+            case "LC":
+                result = lowerCase(json);
+                break;
+            case "GETGIS":
+                result = getGIs(json);
+                break;
+            case "GETACCESSIONS":
+                result = getAccessionVersion(json);
+                break;
+            case "REGEX":
+                result = searchRegex(json,parameter1, parameter2);
+                break;
             default: result = null;
+                break;
         }
         return result;
     };
