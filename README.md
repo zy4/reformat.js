@@ -12,13 +12,13 @@ __`fasta`__, __`clustal`__, __`phylip`__, __`stockholm`__, __`pir`__, __`embl`__
 Usage
 -----
 
-You will need to include a newer version of jQuery in order to use this library.
+You will need to include jQuery in order to use this library.
 
 
 Methods
 -------
 
-__`fasta`:__ Returns the sequence as fasta.
+e.g. __`fasta`:__ Returns the sequence as fasta.
 
 ```javascript
 var fasta = $('#myClustal').reformat('fasta');
@@ -27,7 +27,7 @@ var fasta = $('#myClustal').reformat('fasta');
 __`getGIs`:__ Returns GI numbers.
 
 ```javascript
-var giArray = getGIs(fasta);
+var giArray = $('mySequences').reformat('getgis');
 ```
 
 
