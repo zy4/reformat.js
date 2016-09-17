@@ -30,6 +30,12 @@ __`getGIs`:__ Returns GI numbers.
 var giArray = $('mySequences').reformat('getgis');
 ```
 
+__`consensus`:__ Returns the consensus sequence of an alignment as a string.
+
+```javascript
+var consensus = $('myAlignment').reformat('consensus');
+```
+
 
 Attribution
 -----------

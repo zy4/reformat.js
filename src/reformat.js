@@ -1485,30 +1485,24 @@ function consensus(json) {
     for(var i=0;i<json[0].seq.length;i++){
         arr.push('');
     }
-
     //console.log(arr);
     var con = ''; // consensus string
-
     for (var i = 0; i < json.length; i++) {
 
         for(var j = 0; j < json[i].seq.length; j++ ) {
 
-           arr[j] += json[i].seq[j];
-           
+           arr[j] += json[i].seq[j];  
         }
-
     }
 
     for (var k = 0; k < arr.length; k++) {
 
         con += getMax(arr[k]);
     }
-    
     //console.log(arr);
     return con;
     
 }
-
 
 
     function getFormat(seqs){
@@ -1549,7 +1543,7 @@ function consensus(json) {
         var format = getFormat(seqs);
         operation = operation.toUpperCase();
         var json = [];
-        var result ="";
+        var result = "";
         switch(format) {
             case "Fasta":
                 json = fasta2json(seqs);
@@ -1592,6 +1586,7 @@ function consensus(json) {
                 result = json2phylip(json);
                 break;
             case "CLUSTAL":
+                console.log(json2clustal(json));
                 result = json2clustal(json);
                 break;
             case "NEXUS":
@@ -1623,6 +1618,9 @@ function consensus(json) {
                 break;
             case "REGEX":
                 result = searchRegex(json,parameter1, parameter2);
+                break;
+            case "CONSENSUS":
+                result = consensus(json);
                 break;
             default: result = null;
                 break;

@@ -40,7 +40,7 @@ D------YYNGWACQVAYMEETSDGSLRHPSFVMFR
 	
 </textarea>
 <br><br>
-<div style="display: block; margin-left: 30%;">
+<div style="display: block; margin-left: 40%;">
 <label>Select Output Format
             <select>
                 <option selected>Choose</option>
@@ -55,10 +55,10 @@ D------YYNGWACQVAYMEETSDGSLRHPSFVMFR
                 <option value="genbank">Genbank</option>
                 <option value="GETGIS">GI Numbers</option>
                 <option value="uc">Uppercase</option>
+                <option value="consensus">Consensus</option>
             </select>
         </label>
 </div>
-
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script type="text/javascript" src="https://rawgit.com/zy4/reformat.js/master/src/reformat.js"></script>
@@ -67,7 +67,7 @@ D------YYNGWACQVAYMEETSDGSLRHPSFVMFR
 		$('select').on('change', function()
 			{
     			$('#out').val($('#input').reformat($(this).val()));
-    			console.log($('#input').reformat($(this).val()));
+    			//console.log($('#input').reformat($(this).val()));
 			});
 </script>
 
