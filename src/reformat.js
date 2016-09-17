@@ -13,8 +13,8 @@ function getGIs(json){
 
     for (var i =0 ; i < json.length; i++) {
 
-        if (json.name[i].substring(0,3) == 'gi|') {
-            result += json.name[i].substring(3).split('|')[0];
+        if (json[i].name.substring(0,3) == 'gi|') {
+            result += json[i].name.substring(3).split('|')[0];
             result += "\n";
         }
     }
