@@ -1456,6 +1456,61 @@ function searchRegex(json, regex, flag) {
     return result;
 }
 
+
+// helper function to get the most frequent char in a string
+
+var getMax = function (str) {
+ var max = 0,
+     maxChar = '';
+  str.split('').forEach(function(char){
+    if(str.split(char).length > max) {
+        max = str.split(char).length;
+        maxChar = char;
+     }
+  });
+  return maxChar;
+};
+
+
+function consensus(json) {
+
+    if(!validateAlignment(json)){
+        console.log("not an alignment");
+        return;
+    }
+
+    var arr = [];
+    
+    // fill the array with empty strings to prevent "undefined" values
+    for(var i=0;i<json[0].seq.length;i++){
+        arr.push('');
+    }
+
+    //console.log(arr);
+    var con = ''; // consensus string
+
+    for (var i = 0; i < json.length; i++) {
+
+        for(var j = 0; j < json[i].seq.length; j++ ) {
+
+           arr[j] += json[i].seq[j];
+           
+        }
+
+    }
+
+    for (var k = 0; k < arr.length; k++) {
+
+        con += getMax(arr[k]);
+    }
+    
+    //console.log(arr);
+    return con;
+    
+}
+
+
+
     function getFormat(seqs){
     if(validateFasta(seqs))
         return "Fasta";
