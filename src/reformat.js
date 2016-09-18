@@ -1586,7 +1586,6 @@ function consensus(json) {
                 result = json2phylip(json);
                 break;
             case "CLUSTAL":
-                console.log(json2clustal(json));
                 result = json2clustal(json);
                 break;
             case "NEXUS":
@@ -1621,6 +1620,9 @@ function consensus(json) {
                 break;
             case "CONSENSUS":
                 result = consensus(json);
+                break;
+            case "DETECT":
+                result = format;
                 break;
             default: result = null;
                 break;
