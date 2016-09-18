@@ -1,0 +1,51 @@
+{
+  "name": "reformat.js",
+  "version": "0.0.1",
+  "description": "javascript bioinformatics format converter and validator",
+  "main": "src/reformat.js",
+  "directories": {
+    "example": "example"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zy4/reformat.js.git"
+  },
+  "keywords": [
+    "alignment",
+    "format",
+    "converter",
+    "validator",
+    "biojs",
+    "library",
+    "fasta",
+    "clustal",
+    "stockholm",
+    "embl",
+    "nexus",
+    "pir",
+    "phylip",
+    "genbank"
+  ],
+  "contributors": [
+    {
+      "name": "Seung-Zin Nam",
+      "email": "zin@posteo.de",
+      "url": "https://github.com/zy4"
+    },
+    {
+      "name": "David Rau",
+      "email": "david.rau@tuebingen.mpg.de",
+      "url": "https://github.com/davidmrau"
+    }
+  ],
+  "author": {
+    "name": "Seung-Zin Nam",
+    "email": "zin@posteo.de",
+    "url": "https://github.com/zy4"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zy4/reformat.js/issues"
+  },
+  "homepage": "https://github.com/zy4/reformat.js#readme"
+}
