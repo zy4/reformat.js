@@ -800,8 +800,7 @@ function json2clustal(clustal){
 
     var result = [],
         i = 0,
-        j =0,
-        splitted = [];
+        j =0;
 
     result += "CLUSTAL multiple sequence alignment";
     result += "\n\n";
@@ -810,8 +809,7 @@ function json2clustal(clustal){
     for (; j < Math.trunc(clustal[i].seq.length/60) + 1 ; j++){
 
         for (; i < clustal.length; i++) {
-            splitted = clustal[i].name.split(/\s/g);
-            result += splitted[0];
+            result += clustal[i].name;
             result += "\t";
             result += chunkString(clustal[i].seq, 60)[j];
             result += "\n";
@@ -1636,6 +1634,8 @@ function consensus(json) {
                 break;
             case "DETECT":
                 result = format;
+            case "PROSITE":
+                result = searchProsite(json,parameter1);
                 break;
             default: result = null;
                 break;
