@@ -1536,7 +1536,20 @@ function consensus(json) {
  */
 
 
+
 (function( $ ){
+
+
+    $.fn.validate = function(src) {
+
+        var seqs = this.val();
+        var found = getFormat(seqs);
+
+        if(found.toUpperCase() == src.toUpperCase())
+            return true;
+        return false;
+
+    };
 
     $.fn.reformat = function(operation, parameter1, parameter2){
         var seqs = this.val();

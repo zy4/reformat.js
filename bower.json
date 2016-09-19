@@ -1,6 +1,6 @@
 {
   "name": "reformat.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/zy4/reformat.js",
   "authors": [
     "Seung-Zin Nam <zin@posteo.de>",
@@ -10,9 +10,9 @@
   "main": "src/reformat.js",
   "keywords": [
     "alignment",
-    "tool",
     "converter",
-    "BioJS"
+    "validator",
+    "biojs"
   ],
   "license": "MIT"
 }

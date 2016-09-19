@@ -42,7 +42,7 @@ D------YYNGWACQVAYMEETSDGSLRHPSFVMFR
 <br><br>
 <div style="display: block; margin-left: 40%;">
 <label>Select Output Format
-            <select>
+            <select id='select1'>
                 <option selected>Choose</option>
                 <option value="fasta">Fasta</option>
                 <option value="a3m">A3M</option>
@@ -61,14 +61,36 @@ D------YYNGWACQVAYMEETSDGSLRHPSFVMFR
         </label>
 </div>
 
+<div style="display: block; margin-left: 40%; margin-top: 20px;">
+<label>Validate Format
+            <select id="select2">
+                <option selected>Choose</option>
+                <option value="fasta">Fasta</option>
+                <option value="a3m">A3M</option>
+                <option value="clustal">CLUSTAL</option>
+                <option value="phylip">PHYLIP</option>
+                <option value="stockholm">STOCKHOLM</option>
+                <option value="pir">PIR</option>
+                <option value="embl">EMBL</option>
+                <option value="nexus">Nexus</option>
+                <option value="genbank">Genbank</option>
+            </select>
+        </label>
+</div>
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script type="text/javascript" src="https://rawgit.com/zy4/reformat.js/master/src/reformat.js"></script>
 
 <script>
-		$('select').on('change', function()
+		$('#select1').on('change', function()
 			{
     			$('#out').val($('#input').reformat($(this).val()));
     			//console.log($('#input').reformat($(this).val()));
 			});
+        $('#select2').on('change', function()
+            {
+                $('#out').val($('#input').validate($(this).val()));
+                //console.log($('#input').validate($(this).val()));
+            });
 </script>
 
