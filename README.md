@@ -42,7 +42,7 @@ __`detect`:__ Returns the format of an input as a string.
 var format = $('#mySequences').reformat('detect');
 ```
 
-__`validate`:__ Validates a input format.
+__`validate`:__ Validates an input format.
 
 ```javascript
 $('#mySequences').validate('fasta'); // returns true or false
