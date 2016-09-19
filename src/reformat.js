@@ -140,24 +140,8 @@ function getMeta(label) {
     // 	console.log( "full_id", full_id );
     // 	console.log( "full_desc", full_desc );
 
-    if ( full_id ) {
-        var id_parts = full_id.split('|');
-
-        // the last item is the accession
-        name = id_parts.pop();
-
-        details.en = name;
-
-        // everything else should be pairs: db|id
-        while ( id_parts.length != 0 ) {
-            var db = id_parts.shift();
-            var id = id_parts.shift();
-            ids[ db ] = id;
-        }
-    }
-    else {
         name = full_id;
-    }
+
 
     if ( full_desc ) {
 
@@ -809,7 +793,7 @@ function json2clustal(clustal){
     for (; j < Math.trunc(clustal[i].seq.length/60) + 1 ; j++){
 
         for (; i < clustal.length; i++) {
-            result += clustal[i].name;
+            result += clustal[i].name.replace(/\s/g, "");;
             result += "\t";
             result += chunkString(clustal[i].seq, 60)[j];
             result += "\n";

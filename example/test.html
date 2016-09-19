@@ -9,7 +9,7 @@
 </center>
 <br><br>
 
-<textarea id="input" style="display: block; margin: auto; width: 50%; height: 250px;">
+<textarea id="input" style="display: block; margin: auto; width: 60%; height: 250px;">
 >gi|33300828|ref|NP_877456#7 putative ATP-dependent DNA ligase [Bacteriophage phiKMV]
 PEITVDGRIVGYVMGKTG-KNVGRVVGYRVELEDGSTVAATGLSEEHIQLLTCAYLNAHI
 D---EAMPNYGRIVEVSAMERSAN-TLRHPSFSRFR
@@ -36,7 +36,7 @@ PECEADGIIQSVNWGTPGLSNEGLVIGFNVLLETGRHVAANNISQTLMEELTANAKEHGE
 D------YYNGWACQVAYMEETSDGSLRHPSFVMFR
 </textarea>
 <br><br>
-<textarea id="out" style="display: block; margin: auto; width: 50%; height: 250px;">
+<textarea id="out" style="display: block; margin: auto; width: 60%; height: 250px;">
 	
 </textarea>
 <br><br>
@@ -85,12 +85,10 @@ D------YYNGWACQVAYMEETSDGSLRHPSFVMFR
 		$('#select1').on('change', function()
 			{
     			$('#out').val($('#input').reformat($(this).val()));
-    			//console.log($('#input').reformat($(this).val()));
 			});
         $('#select2').on('change', function()
             {
                 $('#out').val($('#input').validate($(this).val()));
-                //console.log($('#input').validate($(this).val()));
             });
 </script>
 
