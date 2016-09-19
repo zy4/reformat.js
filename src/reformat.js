@@ -1618,6 +1618,7 @@ function consensus(json) {
                 break;
             case "DETECT":
                 result = format;
+                break;
             case "PROSITE":
                 result = searchProsite(json,parameter1);
                 break;
