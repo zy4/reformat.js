@@ -1487,6 +1487,35 @@ function consensus(json) {
 }
 
 
+function alphabet(json) {
+
+    var alphabet = "";
+    var mapping = {};
+    var newString = "";
+
+    for (var i=0;i<json.length;i++) {
+
+        alphabet += json[i].seq;
+
+    }
+
+    alphabet = alphabet.split('').sort().join('');
+
+    for (var i = 0; i < alphabet.length; i++) {
+        if (!(alphabet[i] in mapping)) {
+          newString += alphabet[i];
+          mapping[alphabet[i]] = true;
+        }
+      }
+
+    alphabet = newString;
+
+    return alphabet;
+
+}
+
+
+
     function getFormat(seqs){
     if(validateFasta(seqs))
         return "Fasta";
@@ -1621,6 +1650,9 @@ function consensus(json) {
                 break;
             case "PROSITE":
                 result = searchProsite(json,parameter1);
+                break;
+            case "ALPHABET":
+                result = alphabet(json);
                 break;
             default: result = null;
                 break;
