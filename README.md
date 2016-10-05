@@ -48,7 +48,7 @@ __`validate`:__ Validates an input format.
 $('#mySequences').validate('fasta'); // returns either true or false
 ```
 
-__`alphabet`:__ Validates an input format.
+__`alphabet`:__ Returns the alphabet of an input.
 
 ```javascript
 $('#mySequences').reformat('alphabet'); // returns the characters which occur in a sequence or an alignment in alphabetical order
