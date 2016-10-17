@@ -1543,7 +1543,7 @@ function relative_frequency(json) {
         "T" : 5.34,
         "V" : 6.87,
         "W" : 1.08,
-        "Y" : 2.92,
+        "Y" : 2.92
 
     }
 
