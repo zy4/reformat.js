@@ -1521,6 +1521,8 @@ function relative_frequency(json) {
     var totalcount = 0;
     var mapping = {};
 
+
+
     for (var i=0; i<json.length; i++) {
         totalcount += json[i].seq.length;
 
@@ -1543,10 +1545,13 @@ function relative_frequency(json) {
             }
         }
 
-
+        // ignore gaps
+        delete mapping["-"];
+        
         mapping[dict[j]] = (mapping[dict[j]] / totalcount) * 100;    
 
     }
+
 
     return mapping;
 
