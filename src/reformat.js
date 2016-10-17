@@ -1730,6 +1730,9 @@ function relative_frequency(json) {
             case "ALPHABET":
                 result = alphabet(json);
                 break;
+            case "FREQ":
+                result = relative_frequency(json);
+                break;
             default: result = null;
                 break;
         }
