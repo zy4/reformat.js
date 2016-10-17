@@ -1521,6 +1521,32 @@ function relative_frequency(json) {
     var totalcount = 0;
     var mapping = {};
 
+    // look up reference frequencies from http://web.expasy.org/protscale/pscale/A.A.Swiss-Prot.html (10/16)
+    var litFreqs = { 
+
+        "A" : 8.25,
+        "C" : 1.37,
+        "D" : 5.54,
+        "E" : 6.75,
+        "F" : 3.86,
+        "G" : 7.07,
+        "H" : 2.27,
+        "I" : 5.96,
+        "K" : 5.84,
+        "L" : 9.66,
+        "M" : 2.42,
+        "N" : 4.06,
+        "P" : 4.70,
+        "Q" : 3.93,
+        "R" : 5.53,
+        "S" : 6.56,
+        "T" : 5.34,
+        "V" : 6.87,
+        "W" : 1.08,
+        "Y" : 2.92,
+
+    }
+
 
 
     for (var i=0; i<json.length; i++) {
@@ -1547,8 +1573,15 @@ function relative_frequency(json) {
 
         // ignore gaps
         delete mapping["-"];
-        
+
         mapping[dict[j]] = (mapping[dict[j]] / totalcount) * 100;    
+
+    }
+
+
+    for (var index in litFreqs) {
+
+        mapping[index] = mapping[index] / litFreqs[index];
 
     }
 
