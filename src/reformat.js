@@ -1515,6 +1515,44 @@ function alphabet(json) {
 }
 
 
+function relative_frequency(json) {
+
+    var dict = alphabet(json);
+    var totalcount = 0;
+    var mapping = {};
+
+    for (var i=0; i<json.length; i++) {
+        totalcount += json[i].seq.length;
+
+    }
+
+    for (var j=0; j<dict.length; j++) {
+
+        mapping[dict[j]] = 0;
+
+        for (var k=0; k<json.length; k++) {
+
+            for (var l=0; l<json[k].seq.length; l++) {
+
+                if (dict[j] == json[k].seq[l]) {
+
+                    mapping[dict[j]]++;
+
+                }
+
+            }
+        }
+
+
+        mapping[dict[j]] = (mapping[dict[j]] / totalcount) * 100;    
+
+    }
+
+    return mapping;
+
+}
+
+
 
     function getFormat(seqs){
     if(validateFasta(seqs))
