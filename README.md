@@ -54,6 +54,12 @@ __`alphabet`:__ Returns the alphabet of an input.
 $('#mySequences').reformat('alphabet'); // returns the characters which occur in a sequence or an alignment in alphabetical order
 ```
 
+__`freq`:__ Returns the alphabet of an input.
+
+```javascript
+$('#mySequences').reformat('freq'); // returns the relative frequencies of amino acids compared to literature values
+```
+
 Attribution
 -----------
 
