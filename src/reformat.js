@@ -401,7 +401,7 @@ function validateAlignment(json) {
         throw new Error("No sequences.");
         return false;
     }
-    // check whether jason object is an valid alignment.
+    // check whether json object is an valid alignment.
     if(json.length < 2 ) {
         throw new Error("Alignment needs at least two sequences");
         return false;
