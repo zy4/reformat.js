@@ -1586,7 +1586,7 @@ function relative_frequency(json) {
     }
 
 
-    return JSON.stringify(mapping);
+    return mapping;
 
 }
 
