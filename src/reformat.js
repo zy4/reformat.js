@@ -1579,7 +1579,7 @@ function relative_frequency(json) {
     }
 
 
-    for (var index in litFreqs) {
+    for (var index in mapping) {
 
         mapping[index] = mapping[index] / litFreqs[index];
 
