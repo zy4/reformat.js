@@ -409,15 +409,15 @@ function validateAlignment(json) {
         var firstlength = json[0].seq.length;
         for (var i = 0; i < json.length; i++) {
             if (json[i].seq.length !== firstlength) {
-                throw new Error("Sequences are required to have the same length.");
+                console.warn("Sequences are required to have the same length.");
                 if (_contains(json[i].seq, "-")) {
-                    throw new Error("warning: input contains dashes without being an alignment");
+                    console.warn("warning: input contains dashes without being an alignment");
                 }
                 return false;
 
             }
             if(json[i].seq == ""){
-                throw new Error("Alignment contains an empty sequence.");
+                console.warn("Alignment contains an empty sequence.");
                 return false;
             }
         }
