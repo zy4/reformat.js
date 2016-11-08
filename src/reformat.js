@@ -290,7 +290,7 @@ function validateClustal (clustal) {
             sequence = sequence.trim();
             lines = sequence.split(/\s+/g);
 
-            if (lines.length !== 2 && lines.length !== 3) {
+            if (lines.length < 2 || lines.length > 3) {
 
                 console.log("Each line has to include name/sequence and optional length");
                 return false;
