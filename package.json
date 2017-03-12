@@ -1,6 +1,6 @@
 {
   "name": "reformat.js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "javascript bioinformatics format converter and validator",
   "main": "src/reformat.js",
   "directories": {

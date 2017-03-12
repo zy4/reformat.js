@@ -253,8 +253,13 @@ function validateFasta(fasta) {
             // join the array back into a single string without newlines and
 
             seq = lines.join('').trim();
+	    
+	    if(0 === seq.length || !seq) {
+                console.warn("no sequence found for header");
+                return false;
+            }
 
-            if (/[^\-\\ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(seq)) {
+            if (/[^\-\\ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(seq.toUpperCase())) {
                 return false;
             }
 
