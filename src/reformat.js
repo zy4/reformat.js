@@ -1724,6 +1724,9 @@ function relative_frequency(json) {
 	    case "ALIGNMENT":
 		result = validateAlignment(json);
 		break;
+	    case "TYPE":
+		result = typeOfSequence(json);
+		break;
             case "DETECT":
                 result = format;
                 break;
