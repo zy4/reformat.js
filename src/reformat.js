@@ -1721,6 +1721,9 @@ function relative_frequency(json) {
             case "CONSENSUS":
                 result = consensus(json);
                 break;
+	    case "ALIGNMENT":
+		result = validateAlignment(json);
+		break;
             case "DETECT":
                 result = format;
                 break;
