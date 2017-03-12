@@ -36,6 +36,11 @@ __`consensus`:__ Returns the consensus sequence of an alignment as a string.
 var consensus = $('#myAlignment').reformat('consensus');
 ```
 
+__`alignment`:__ Validates if input is alignment
+```javascript
+$('#mySequences').reformat('alignment');
+```
+
 __`detect`:__ Returns the format of an input as a string.
 
 ```javascript
