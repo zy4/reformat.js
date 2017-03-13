@@ -41,6 +41,11 @@ __`alignment`:__ Validates if input is alignment
 $('#mySequences').reformat('alignment');
 ```
 
+__`type`:__ returns type of input sequence, either DNA, RNA or Protein
+```javascript
+$('#mySequences').reformat('type');
+```
+
 __`detect`:__ Returns the format of an input as a string.
 
 ```javascript
