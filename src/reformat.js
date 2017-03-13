@@ -1391,15 +1391,16 @@ function json2genbank(json){
 }
 
 function typeOfSequence(json) {
-    if (!/[^\-\\.AGUC\s]/i.test(json[0].seq)){
+    
+    if (!/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase())){
+        return "Protein"
+    }
+    if (!/[^\-\\.AGUC\s]/i.test(json[0].seq.toUpperCase())){
         return "RNA"
     }
 
-    if (!/[^\-\\.AGTC\s]/i.test(json[0].seq)){
+    if (!/[^\-\\.AGTC\s]/i.test(json[0].seq.toUpperCase())){
         return "DNA"
-    }
-    if (!/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(json[0].seq)){
-        return "Protein"
     }
     return  "undefined";
 
