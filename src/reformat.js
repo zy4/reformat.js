@@ -1728,11 +1728,14 @@ function relative_frequency(json) {
                 result = consensus(json);
                 break;
     	    case "ALIGNMENT":
-        		result = validateAlignment(json);
-        		break;
+        	result = validateAlignment(json);
+        	break;
     	    case "TYPE":
-        		result = typeOfSequence(json);
-        		break;
+        	result = typeOfSequence(json);
+        	break;
+	    case "NUMBERS":
+		result = getNumberOfFastaSeqs(seqs);
+		break;
             case "DETECT":
                 result = format;
                 break;
