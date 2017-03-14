@@ -1412,20 +1412,23 @@ function uniqueIDs(json){
         return;
     }
 
-    identifiers = [];
+    var identifiers = [];
 
     for (var i = 0; i < json.length; i++) {
-        var substr = json[i].name.substr(0,json[i].name.indexOf('\s'));
-        if(identifiers.includes(substr)) {
+        var substr = json[i].name;
+
+        if(identifiers.indexOf(substr) > -1) {
+            console.warn("duplicate identifier found");
             return false;
         }
         else {
-            identifiers += substr
+            identifiers.push(substr);
         }
     }
 
     return true;
 }
+
 
 function searchRegex(json, regex, flag) {
     if (!json) {
