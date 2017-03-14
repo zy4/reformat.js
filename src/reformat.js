@@ -385,7 +385,7 @@ function conservation(aln) {
 
 
 function getNumberOfFastaSeqs(fas) {
-    var fastaObj = readFastaText(fas);
+    var fastaObj = fasta2json(fas);
     return fastaObj.length;
 }
 
