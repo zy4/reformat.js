@@ -403,12 +403,12 @@ function addSpaceEveryNChars(str, n) {
 
 function validateAlignment(json) {
     if (!json) {
-        throw new Error("No sequences.");
+        console.warn("No sequences.");
         return false;
     }
     // check whether json object is an valid alignment.
     if(json.length < 2 ) {
-        throw new Error("Alignment needs at least two sequences");
+        console.warn("Alignment needs at least two sequences");
         return false;
     }
         var firstlength = json[0].seq.length;
