@@ -1407,6 +1407,26 @@ function typeOfSequence(json) {
 }
 
 
+function uniqueIDs(json){
+    if (!json) {
+        return;
+    }
+
+    identifiers = [];
+
+    for (var i = 0; i < json.length; i++) {
+        var substr = json[i].name.substr(0,json[i].name.indexOf('\s'));
+        if(identifiers.includes(substr)) {
+            return false;
+        }
+        else {
+            identifiers += substr
+        }
+    }
+
+    return true;
+}
+
 function searchRegex(json, regex, flag) {
     if (!json) {
         return;
@@ -1747,6 +1767,9 @@ function relative_frequency(json) {
                 break;
             case "FREQ":
                 result = relative_frequency(json);
+                break;
+            case "UNIQUEIDS":
+                result = uniqueIDs(json);
                 break;
             default: result = null;
                 break;
