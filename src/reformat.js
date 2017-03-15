@@ -1415,14 +1415,14 @@ function uniqueIDs(json){
     var identifiers = [];
 
     for (var i = 0; i < json.length; i++) {
-        var substr = json[i].name;
-
-        if(identifiers.indexOf(substr) > -1) {
+        var name = json[i].name;
+        var substr = name.split(" ");
+        if(identifiers.indexOf(substr[0]) > -1) {
             console.warn("duplicate identifier found");
             return false;
         }
         else {
-            identifiers.push(substr);
+            identifiers.push(substr[0]);
         }
     }
 
