@@ -231,14 +231,19 @@ function validateFasta(fasta) {
 
         for (; i < splittedStrings.length; i++) {
 
+            // immediately remove trailing spaces
+            splittedStrings[i] = splittedStrings[i].trim();
+
+            //check if header contains at least one char
+            if(splittedStrings[i].length < 1){
+                return false;
+            }
             // only pir format has a ';' as the 4. char
             if(splittedStrings[i].charAt(4) == ';')
                 return false;
+
             //reinsert seperator
             var seq = ">" + splittedStrings[i];
-
-            // immediately remove trailing spaces
-            seq = seq.trim();
 
             // split on newlines...
             var lines = seq.split('\n');
