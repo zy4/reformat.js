@@ -264,11 +264,12 @@ function validateFasta(fasta) {
                 return false;
             }
 
-            if (/[^\-\\ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(seq.toUpperCase())) {
+            if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(seq.toUpperCase())) {
                 return false;
             }
 
         }
+
 
         return true;
 
@@ -324,7 +325,7 @@ function validateClustal (clustal) {
                         console.log('input is not an alignment');
                         return false; }
 
-                    if (/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(clustalObj[j].seq)) {
+                    if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(clustalObj[j].seq)) {
                         throw new Error("Alignment contains invalid symbols.");
                         return false;
                     }
@@ -407,6 +408,7 @@ function addSpaceEveryNChars(str, n) {
 }
 
 function validateAlignment(json) {
+
     if (!json) {
         console.warn("No sequences.");
         return false;
@@ -426,6 +428,7 @@ function validateAlignment(json) {
                 return false;
 
             }
+
             if(json[i].seq == ""){
                 console.warn("Alignment contains an empty sequence.");
                 return false;
@@ -529,7 +532,7 @@ function validatePhylip(phylip){
 
         // check for wrong symbols
         for (var i = 0; i < n; i++) {
-            if (/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(seq[i])) {
+            if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(seq[i])) {
                 throw new Error("Alignment contains invalid symbols.");
                 return false;
             }
@@ -661,7 +664,7 @@ function validateStockholm(stockholm){
                 element = {};
                 element.seq = split_seq[1];
 
-                if (/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(element.seq)) {
+                if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element.seq)) {
                     throw new Error("Alignment contains invalid symbols.");
                     return false;
                 }
@@ -887,7 +890,7 @@ function validatea3m(a3m) {
                 return false;
             }
 
-            if (/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+            if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
                 return false;
             }
 
@@ -969,7 +972,7 @@ function validatePir(pir){
         if (element[i].name.charAt(2) != ";") {
             return false;
         }
-        if (/[^\-\\.\\*ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+        if (/[^\-\\.\\*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
             throw new Error("Alignment contains invalid symbols.");
             return false;
         }
@@ -1028,7 +1031,7 @@ function validateEMBL(embl) {
             else if(element[i].name == "")
                 return false;
 
-            if (/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+            if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
                 throw new Error("Alignment contains invalid symbols.");
                 return false;
             }
@@ -1193,7 +1196,7 @@ function validateNexus(nexus) {
         return false;
     }
     for(var i = 0; i < element.length; i++){
-        if (/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+        if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
             throw new Error("Sequence contains invalid symbols.");
             return false;
         }
@@ -1291,7 +1294,7 @@ function validateGenbank(genbank){
     element = genbank2json(genbank);
 
     for(var i =0; i < element.length; i++){
-        if (/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+        if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
             throw new Error("Sequence contains invalid symbols.");
             return false;
         }
@@ -1397,7 +1400,7 @@ function json2genbank(json){
 
 function typeOfSequence(json) {
     
-    if (!/[^\-\\.ABCDEFGHIKLMNPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase())){
+    if (!/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase())){
         return "Protein"
     }
     if (!/[^\-\\.AGUC\s]/i.test(json[0].seq.toUpperCase())){
@@ -1441,17 +1444,8 @@ function inputSmallEnough(json, charLimit) {
     if (!charLimit) {
         return;
     }
-    var sum = 0;
 
-    for (var i = 0; i < json.length; i++) {
-        var sum = sum + json[i].name.length + json[i].seq.length;
-    }
-
-    if(sum < charLimit) {
-        return true;
-    }
-    else return false;
-
+    return (JSON.stringify(json).length < charLimit);
 }
 
 function tooManySeqs(json, seqLimit) {
@@ -1462,10 +1456,7 @@ function tooManySeqs(json, seqLimit) {
         return;
     }
 
-    if (json.length>seqLimit) {
-        return true;
-    }
-    else return false;
+    return (json.length > seqLimit);
 }
 
 
@@ -1653,7 +1644,6 @@ function relative_frequency(json) {
 
     }
 
-
     return mapping;
 
 }
@@ -1790,14 +1780,14 @@ function relative_frequency(json) {
                 result = consensus(json);
                 break;
     	    case "ALIGNMENT":
-        	result = validateAlignment(json);
-        	break;
+        	    result = validateAlignment(json);
+        	    break;
     	    case "TYPE":
-        	result = typeOfSequence(json);
-        	break;
-	    case "NUMBERS":
-		result = getNumberOfFastaSeqs(seqs);
-		break;
+        	    result = typeOfSequence(json);
+        	    break;
+	        case "NUMBERS":
+		        result = getNumberOfFastaSeqs(seqs);
+		        break;
             case "DETECT":
                 result = format;
                 break;
