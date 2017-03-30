@@ -226,7 +226,7 @@ function validateFasta(fasta) {
             return false;
         }
 
-        var splittedStrings = fasta.split(">"),
+        var splittedStrings = fasta.split('\n>'),
             i = 1;
 
         for (; i < splittedStrings.length; i++) {
@@ -1434,6 +1434,40 @@ function uniqueIDs(json){
     return true;
 }
 
+function inputSmallEnough(json, charLimit) {
+    if (!json) {
+        return;
+    }
+    if (!charLimit) {
+        return;
+    }
+    var sum = 0;
+
+    for (var i = 0; i < json.length; i++) {
+        var sum = sum + json[i].name.length + json[i].seq.length;
+    }
+
+    if(sum < charLimit) {
+        return true;
+    }
+    else return false;
+
+}
+
+function tooManySeqs(json, seqLimit) {
+    if (!json) {
+        return;
+    }
+    if (!seqLimit) {
+        return;
+    }
+
+    if (json.length>seqLimit) {
+        return true;
+    }
+    else return false;
+}
+
 
 function searchRegex(json, regex, flag) {
     if (!json) {
@@ -1775,6 +1809,12 @@ function relative_frequency(json) {
                 break;
             case "FREQ":
                 result = relative_frequency(json);
+                break;
+            case "MAXLENGTH":
+                result = inputSmallEnough(json, parameter1);
+                break;
+            case "MAXSEQNUMBER":
+                result = tooManySeqs(json, parameter1);
                 break;
             case "UNIQUEIDS":
                 result = uniqueIDs(json);
