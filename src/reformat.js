@@ -414,31 +414,35 @@ function validateAlignment(json) {
         return false;
     }
     // check whether json object is an valid alignment.
-    if(json.length < 2 ) {
-        console.warn("Alignment needs at least two sequences");
-        return false;
-    }
-        var firstlength = json[0].seq.length;
-        for (var i = 0; i < json.length; i++) {
-            if (json[i].seq.length !== firstlength) {
-                console.warn("Sequences are required to have the same length.");
-                if (_contains(json[i].seq, "-")) {
-                    console.warn("warning: input contains dashes without being an alignment");
-                }
-                return false;
+    /*if(json.length < 2 ) {
+     console.warn("Alignment needs at least two sequences");
+     return false;
+     */
 
-            }
+    /*
 
-            if(json[i].seq == ""){
-                console.warn("Alignment contains an empty sequence.");
-                return false;
-            }
+     var firstlength = json[0].seq.length;
+
+     for (var i = 0; i < json.length; i++) {
+     if (json[i].seq.length !== firstlength) {
+     console.warn("Sequences are required to have the same length.");
+     if (_contains(json[i].seq, "-")) {
+     console.warn("warning: input contains dashes without being an alignment");
+     }
+     return false;
+
+     }
+     */
+    for (var i = 0; i < json.length; i++) {
+        if (json[i].seq == "") {
+            console.warn("Alignment contains an empty sequence.");
+            return false;
         }
-        console.log("this is an alignment");
+    }
+
+    console.log("this is an alignment");
     return true;
-
 }
-
 
 function json2fasta(json) {
     var result = '';
@@ -1448,6 +1452,7 @@ function inputSmallEnough(json, charLimit) {
     return (JSON.stringify(json).length < charLimit);
 }
 
+
 function tooManySeqs(json, seqLimit) {
     if (!json) {
         return;
@@ -1460,358 +1465,392 @@ function tooManySeqs(json, seqLimit) {
 }
 
 
-function searchRegex(json, regex, flag) {
+function sameSeqLength(json) {
     if (!json) {
         return;
     }
-    if (!regex) {
+    var firstlength = json[0].seq.length;
+    for (var i = 0; i < json.length; i++) {
+        if (json[i].seq.length !== firstlength)
+            return false;
+    }
+    return true;
+}
+
+
+function onlyDashes(json) {
+    if (!json) {
         return;
     }
-    var matches, reg, beginHit, endHit, result = [];
-    reg = new RegExp(regex, flag);
 
     for (var i = 0; i < json.length; i++) {
+        if (/(^-+)$/.test(json[i].seq) || /(^[.]+)$/.test(json[i].seq))
+            return true;
+    }
+        return false;
+}
 
-        if (json[i].seq.match(reg) != null) {
-            var element = {};
-            beginHit = 0;
-            endHit = 0;
 
-            matches = json[i].seq.match(reg);
-            var hit = [];
-            for (var j = 0; j < matches.length; j++) {
-                var hitElement = {};
-                beginHit = json[i].seq.indexOf(matches[j], endHit+1);
-                endHit = json[i].seq.indexOf(matches[j], endHit+1) + matches[j].length - 1;
-                hitElement.endPos = beginHit;
-                hitElement.startPos = endHit;
-                hit.push(hitElement);
+            function searchRegex(json, regex, flag) {
+                if (!json) {
+                    return;
+                }
+                if (!regex) {
+                    return;
+                }
+                var matches, reg, beginHit, endHit, result = [];
+                reg = new RegExp(regex, flag);
+
+                for (var i = 0; i < json.length; i++) {
+
+                    if (json[i].seq.match(reg) != null) {
+                        var element = {};
+                        beginHit = 0;
+                        endHit = 0;
+
+                        matches = json[i].seq.match(reg);
+                        var hit = [];
+                        for (var j = 0; j < matches.length; j++) {
+                            var hitElement = {};
+                            beginHit = json[i].seq.indexOf(matches[j], endHit+1);
+                            endHit = json[i].seq.indexOf(matches[j], endHit+1) + matches[j].length - 1;
+                            hitElement.endPos = beginHit;
+                            hitElement.startPos = endHit;
+                            hit.push(hitElement);
+                        }
+
+                        element.seq = json[i].seq;
+                        element.name = json[i].name;
+                        element.hit = hit;
+                        result.push(element);
+                    }
+                }
+                return result;
             }
 
-            element.seq = json[i].seq;
-            element.name = json[i].name;
-            element.hit = hit;
-            result.push(element);
-        }
-    }
-    return result;
-}
 
 
 // helper function to get the most frequent char in a string
 
-var getMax = function (str) {
- var max = 0,
-     maxChar = '';
-  str.split('').forEach(function(char){
-    if(str.split(char).length > max) {
-        max = str.split(char).length;
-        maxChar = char;
-     }
-  });
-  return maxChar;
-};
+            var getMax = function (str) {
+                var max = 0,
+                    maxChar = '';
+                str.split('').forEach(function(char){
+                    if(str.split(char).length > max) {
+                        max = str.split(char).length;
+                        maxChar = char;
+                    }
+                });
+                return maxChar;
+            };
 
 
-function consensus(json) {
+            function consensus(json) {
 
-    if(!validateAlignment(json)){
-        console.log("not an alignment");
-        return;
-    }
+                if(!validateAlignment(json)){
+                    console.log("not an alignment");
+                    return;
+                }
 
-    var arr = [];
-    
-    // fill the array with empty strings to prevent "undefined" values
-    for(var i=0;i<json[0].seq.length;i++){
-        arr.push('');
-    }
-    //console.log(arr);
-    var con = ''; // consensus string
-    for (var i = 0; i < json.length; i++) {
+                var arr = [];
 
-        for(var j = 0; j < json[i].seq.length; j++ ) {
+                // fill the array with empty strings to prevent "undefined" values
+                for(var i=0;i<json[0].seq.length;i++){
+                    arr.push('');
+                }
+                //console.log(arr);
+                var con = ''; // consensus string
+                for (var i = 0; i < json.length; i++) {
 
-           arr[j] += json[i].seq[j];  
-        }
-    }
+                    for(var j = 0; j < json[i].seq.length; j++ ) {
 
-    for (var k = 0; k < arr.length; k++) {
+                        arr[j] += json[i].seq[j];
+                    }
+                }
 
-        con += getMax(arr[k]);
-    }
-    //console.log(arr);
-    return con;
-    
-}
+                for (var k = 0; k < arr.length; k++) {
 
+                    con += getMax(arr[k]);
+                }
+                //console.log(arr);
+                return con;
 
-function alphabet(json) {
-
-    var alphabet = "";
-    var mapping = {};
-    var newString = "";
-
-    for (var i=0;i<json.length;i++) {
-
-        alphabet += json[i].seq;
-
-    }
-
-    alphabet = alphabet.split('').sort().join('');
-
-    for (var i = 0; i < alphabet.length; i++) {
-        if (!(alphabet[i] in mapping)) {
-          newString += alphabet[i];
-          mapping[alphabet[i]] = true;
-        }
-      }
-
-    alphabet = newString;
-
-    return alphabet;
-
-}
+            }
 
 
-function relative_frequency(json) {
+            function alphabet(json) {
 
-    var dict = alphabet(json);
-    var totalcount = 0;
-    var mapping = {};
+                var alphabet = "";
+                var mapping = {};
+                var newString = "";
 
-    // look up reference frequencies from http://web.expasy.org/protscale/pscale/A.A.Swiss-Prot.html (10/16)
-    var litFreqs = { 
+                for (var i=0;i<json.length;i++) {
 
-        "A" : 8.25,
-        "C" : 1.37,
-        "D" : 5.54,
-        "E" : 6.75,
-        "F" : 3.86,
-        "G" : 7.07,
-        "H" : 2.27,
-        "I" : 5.96,
-        "K" : 5.84,
-        "L" : 9.66,
-        "M" : 2.42,
-        "N" : 4.06,
-        "P" : 4.70,
-        "Q" : 3.93,
-        "R" : 5.53,
-        "S" : 6.56,
-        "T" : 5.34,
-        "V" : 6.87,
-        "W" : 1.08,
-        "Y" : 2.92
-
-    }
-
-
-
-    for (var i=0; i<json.length; i++) {
-        totalcount += json[i].seq.length;
-
-    }
-
-    for (var j=0; j<dict.length; j++) {
-
-        mapping[dict[j]] = 0;
-
-        for (var k=0; k<json.length; k++) {
-
-            for (var l=0; l<json[k].seq.length; l++) {
-
-                if (dict[j] == json[k].seq[l]) {
-
-                    mapping[dict[j]]++;
+                    alphabet += json[i].seq;
 
                 }
 
+                alphabet = alphabet.split('').sort().join('');
+
+                for (var i = 0; i < alphabet.length; i++) {
+                    if (!(alphabet[i] in mapping)) {
+                        newString += alphabet[i];
+                        mapping[alphabet[i]] = true;
+                    }
+                }
+
+                alphabet = newString;
+
+                return alphabet;
+
             }
-        }
-
-        // ignore gaps
-        delete mapping["-"];
-
-        mapping[dict[j]] = (mapping[dict[j]] / totalcount) * 100;    
-
-    }
 
 
-    for (var index in mapping) {
+            function relative_frequency(json) {
 
-        mapping[index] = mapping[index] / litFreqs[index];
+                var dict = alphabet(json);
+                var totalcount = 0;
+                var mapping = {};
 
-    }
+                // look up reference frequencies from http://web.expasy.org/protscale/pscale/A.A.Swiss-Prot.html (10/16)
+                var litFreqs = {
 
-    return mapping;
+                    "A" : 8.25,
+                    "C" : 1.37,
+                    "D" : 5.54,
+                    "E" : 6.75,
+                    "F" : 3.86,
+                    "G" : 7.07,
+                    "H" : 2.27,
+                    "I" : 5.96,
+                    "K" : 5.84,
+                    "L" : 9.66,
+                    "M" : 2.42,
+                    "N" : 4.06,
+                    "P" : 4.70,
+                    "Q" : 3.93,
+                    "R" : 5.53,
+                    "S" : 6.56,
+                    "T" : 5.34,
+                    "V" : 6.87,
+                    "W" : 1.08,
+                    "Y" : 2.92
 
-}
-
-
-
-    function getFormat(seqs){
-    if(validateFasta(seqs))
-        return "Fasta";
-    else if(validatea3m(seqs))
-        return "A3M";
-    else if(validatePhylip(seqs))
-        return "Phylip";
-    else if(validateClustal(seqs))
-        return "Clustal";
-    else if(validateEMBL(seqs))
-        return "EMBL";
-    else if (validateGenbank(seqs))
-        return "Genbank";
-    else if(validateNexus(seqs))
-        return "NEXUS";
-    else if(validatePir(seqs))
-        return "PIR";
-    else if(validateStockholm(seqs))
-        return "Stockholm";
-    else
-        return "";
-}
-
-
-/**
- * @targetFormat {String} target format (Fasta, A3M, Phylip, Clustal, Nexus, EMBL, Genbank, Stockholm, PIR)
- *
- * @return {String} result containing the converted sequence
- */
+                }
 
 
 
-(function( $ ){
+                for (var i=0; i<json.length; i++) {
+                    totalcount += json[i].seq.length;
+
+                }
+
+                for (var j=0; j<dict.length; j++) {
+
+                    mapping[dict[j]] = 0;
+
+                    for (var k=0; k<json.length; k++) {
+
+                        for (var l=0; l<json[k].seq.length; l++) {
+
+                            if (dict[j] == json[k].seq[l]) {
+
+                                mapping[dict[j]]++;
+
+                            }
+
+                        }
+                    }
+
+                    // ignore gaps
+                    delete mapping["-"];
+
+                    mapping[dict[j]] = (mapping[dict[j]] / totalcount) * 100;
+
+                }
 
 
-    $.fn.validate = function(src) {
+                for (var index in mapping) {
 
-        var seqs = this.val();
-        var found = getFormat(seqs);
+                    mapping[index] = mapping[index] / litFreqs[index];
 
-        if(found.toUpperCase() == src.toUpperCase())
-            return true;
-        return false;
+                }
 
-    };
+                return mapping;
 
-    $.fn.reformat = function(operation, parameter1, parameter2){
-        var seqs = this.val();
-        var format = getFormat(seqs);
-        operation = operation.toUpperCase();
-        var json = [];
-        var result = "";
-        switch(format) {
-            case "Fasta":
-                json = fasta2json(seqs);
-                break;
-            case "A3M":
-                json = a3m2json(seqs);
-                break;
-            case "Phylip":
-                json = phylip2json(seqs);
-                break;
-            case "Clustal":
-                json = clustal2json(seqs);
-                break;
-            case "Nexus":
-                json = nexus2json(seqs);
-                break;
-            case "EMBL":
-                json = embl2json(seqs);
-                break;
-            case "Genbank":
-                json = genbank2json(seqs);
-                break;
-            case "PIR":
-                json = pir2json(seqs);
-                break;
-            case "Stockholm":
-                json = stockholm2json(seqs);
-                break;
-            default:json = null;
-        }
+            }
 
-        switch(operation) {
-            case "FASTA":
-                result = json2fasta(json);
-                break;
-            case "A3M":
-                result = json2a3m(json);
-                break;
-            case "PHYLIP":
-                result = json2phylip(json);
-                break;
-            case "CLUSTAL":
-                result = json2clustal(json);
-                break;
-            case "NEXUS":
-                result = json2nexus(json);
-                break;
-            case "EMBL":
-                result = json2embl(json);
-                break;
-            case "GENBANK":
-                result = json2genbank(json);
-                break;
-            case "PIR":
-                result = json2pir(json);
-                break;
-            case "STOCKHOLM":
-                result = json2stockholm(json);
-                break;
-            case "UC":
-                result = upperCase(json);
-                break;
-            case "LC":
-                result = lowerCase(json);
-                break;
-            case "GETGIS":
-                result = getGIs(json);
-                break;
-            case "GETACCESSIONS":
-                result = getAccessionVersion(json);
-                break;
-            case "REGEX":
-                result = searchRegex(json,parameter1, parameter2);
-                break;
-            case "CONSENSUS":
-                result = consensus(json);
-                break;
-    	    case "ALIGNMENT":
-        	    result = validateAlignment(json);
-        	    break;
-    	    case "TYPE":
-        	    result = typeOfSequence(json);
-        	    break;
-	        case "NUMBERS":
-		        result = getNumberOfFastaSeqs(seqs);
-		        break;
-            case "DETECT":
-                result = format;
-                break;
-            case "PROSITE":
-                result = searchProsite(json,parameter1);
-                break;
-            case "ALPHABET":
-                result = alphabet(json);
-                break;
-            case "FREQ":
-                result = relative_frequency(json);
-                break;
-            case "MAXLENGTH":
-                result = inputSmallEnough(json, parameter1);
-                break;
-            case "MAXSEQNUMBER":
-                result = tooManySeqs(json, parameter1);
-                break;
-            case "UNIQUEIDS":
-                result = uniqueIDs(json);
-                break;
-            default: result = null;
-                break;
-        }
-        return result;
-    };
-})( jQuery );
+
+
+            function getFormat(seqs){
+                if(validateFasta(seqs))
+                    return "Fasta";
+                else if(validatea3m(seqs))
+                    return "A3M";
+                else if(validatePhylip(seqs))
+                    return "Phylip";
+                else if(validateClustal(seqs))
+                    return "Clustal";
+                else if(validateEMBL(seqs))
+                    return "EMBL";
+                else if (validateGenbank(seqs))
+                    return "Genbank";
+                else if(validateNexus(seqs))
+                    return "NEXUS";
+                else if(validatePir(seqs))
+                    return "PIR";
+                else if(validateStockholm(seqs))
+                    return "Stockholm";
+                else
+                    return "";
+            }
+
+
+            /**
+             * @targetFormat {String} target format (Fasta, A3M, Phylip, Clustal, Nexus, EMBL, Genbank, Stockholm, PIR)
+             *
+             * @return {String} result containing the converted sequence
+             */
+
+
+
+            (function( $ ){
+
+
+                $.fn.validate = function(src) {
+
+                    var seqs = this.val();
+                    var found = getFormat(seqs);
+
+                    if(found.toUpperCase() == src.toUpperCase())
+                        return true;
+                    return false;
+
+                };
+
+                $.fn.reformat = function(operation, parameter1, parameter2){
+                    var seqs = this.val();
+                    var format = getFormat(seqs);
+                    operation = operation.toUpperCase();
+                    var json = [];
+                    var result = "";
+                    switch(format) {
+                        case "Fasta":
+                            json = fasta2json(seqs);
+                            break;
+                        case "A3M":
+                            json = a3m2json(seqs);
+                            break;
+                        case "Phylip":
+                            json = phylip2json(seqs);
+                            break;
+                        case "Clustal":
+                            json = clustal2json(seqs);
+                            break;
+                        case "Nexus":
+                            json = nexus2json(seqs);
+                            break;
+                        case "EMBL":
+                            json = embl2json(seqs);
+                            break;
+                        case "Genbank":
+                            json = genbank2json(seqs);
+                            break;
+                        case "PIR":
+                            json = pir2json(seqs);
+                            break;
+                        case "Stockholm":
+                            json = stockholm2json(seqs);
+                            break;
+                        default:json = null;
+                    }
+
+                    switch(operation) {
+                        case "FASTA":
+                            result = json2fasta(json);
+                            break;
+                        case "A3M":
+                            result = json2a3m(json);
+                            break;
+                        case "PHYLIP":
+                            result = json2phylip(json);
+                            break;
+                        case "CLUSTAL":
+                            result = json2clustal(json);
+                            break;
+                        case "NEXUS":
+                            result = json2nexus(json);
+                            break;
+                        case "EMBL":
+                            result = json2embl(json);
+                            break;
+                        case "GENBANK":
+                            result = json2genbank(json);
+                            break;
+                        case "PIR":
+                            result = json2pir(json);
+                            break;
+                        case "STOCKHOLM":
+                            result = json2stockholm(json);
+                            break;
+                        case "UC":
+                            result = upperCase(json);
+                            break;
+                        case "LC":
+                            result = lowerCase(json);
+                            break;
+                        case "GETGIS":
+                            result = getGIs(json);
+                            break;
+                        case "GETACCESSIONS":
+                            result = getAccessionVersion(json);
+                            break;
+                        case "REGEX":
+                            result = searchRegex(json,parameter1, parameter2);
+                            break;
+                        case "CONSENSUS":
+                            result = consensus(json);
+                            break;
+                        case "ALIGNMENT":
+                            result = validateAlignment(json);
+                            break;
+                        case "TYPE":
+                            result = typeOfSequence(json);
+                            break;
+                        case "NUMBERS":
+                            result = getNumberOfFastaSeqs(seqs);
+                            break;
+                        case "DETECT":
+                            result = format;
+                            break;
+                        case "PROSITE":
+                            result = searchProsite(json,parameter1);
+                            break;
+                        case "ALPHABET":
+                            result = alphabet(json);
+                            break;
+                        case "FREQ":
+                            result = relative_frequency(json);
+                            break;
+                        case "MAXLENGTH":
+                            result = inputSmallEnough(json, parameter1);
+                            break;
+                        case "MAXSEQNUMBER":
+                            result = tooManySeqs(json, parameter1);
+                            break;
+                        case "SAMELENGTH":
+                            result = sameSeqLength(json);
+                            break;
+                        case "DASHES":
+                            result = onlyDashes(json);
+                            break;
+                        case "UNIQUEIDS":
+                            result = uniqueIDs(json);
+                            break;
+                        default: result = null;
+                            break;
+                    }
+                    return result;
+                };
+            })( jQuery );
+
