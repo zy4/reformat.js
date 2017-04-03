@@ -1418,9 +1418,13 @@ function json2genbank(json){
 }
 
 
-//TODO delete this function and find more convenient/failproof way of displaying type in json2genbank
+//TODO delete this function and find more convenient/failproof way of displaying type in json2genbank & json2nexus
 
 function typeOfSequence(json) {
+
+    if(!json) {
+        return;
+    }
 
     if (!/[^\-\\.*AGTC\s]/i.test(json[0].seq.toUpperCase())){
         return "DNA"
@@ -1440,11 +1444,19 @@ function typeOfSequence(json) {
 
 function validateDNA(json) {
 
+    if(!json) {
+        return;
+    }
+
     return (!/[^\-\\.*AGTC\s]/i.test(json[0].seq.toUpperCase()));
 }
 
 
 function validateRNA(json) {
+
+    if(!json) {
+        return;
+    }
 
     return (!/[^\-\\.*AGUC\s]/i.test(json[0].seq.toUpperCase()));
 }
@@ -1452,10 +1464,21 @@ function validateRNA(json) {
 
 function validateProtein(json) {
 
+    if(!json) {
+        return;
+    }
+
     return (!/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase()));
 }
 
+function continuousLine(json) {
 
+    if (!json) {
+        return;
+    }
+
+    return ((json.length === 0) || (!/\s/i.test(json)));
+}
 
 function uniqueIDs(json){
     if (!json) {
@@ -1873,6 +1896,9 @@ function onlyDashes(json) {
                             break;
                         case "HEADER":
                             result = validateHeader(json);
+                            break;
+                        case "LINE":
+                            result = continuousLine(json);
                             break;
                         case "DNA":
                             result = validateDNA(json);
