@@ -444,6 +444,21 @@ function validateAlignment(json) {
     return true;
 }
 
+function validateHeader(json) {
+
+    if (!json) {
+        console.warn("No sequences.");
+        return false;
+    }
+
+    for (var i = 0; i < json.length; i++) {
+        if (json[i].charAt(0) == '<'){
+            return true;
+        }
+    }
+    return false;
+}
+
 function json2fasta(json) {
     var result = '';
     for (var i = 0; i < json.length; i++) {
@@ -1402,21 +1417,44 @@ function json2genbank(json){
 
 }
 
+
+//TODO delete this function and find more convenient/failproof way of displaying type in json2genbank
+
 function typeOfSequence(json) {
-    
-    if (!/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase())){
-        return "Protein"
+
+    if (!/[^\-\\.*AGTC\s]/i.test(json[0].seq.toUpperCase())){
+        return "DNA"
     }
-    if (!/[^\-\\.AGUC\s]/i.test(json[0].seq.toUpperCase())){
+
+    if (!/[^\-\\.*AGUC\s]/i.test(json[0].seq.toUpperCase())){
         return "RNA"
     }
 
-    if (!/[^\-\\.AGTC\s]/i.test(json[0].seq.toUpperCase())){
-        return "DNA"
+    if (!/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase())){
+        return "Protein"
     }
-    return  "undefined";
 
+    return  "undefined";
 }
+
+
+function validateDNA(json) {
+
+    return (!/[^\-\\.*AGTC\s]/i.test(json[0].seq.toUpperCase()));
+}
+
+
+function validateRNA(json) {
+
+    return (!/[^\-\\.*AGUC\s]/i.test(json[0].seq.toUpperCase()));
+}
+
+
+function validateProtein(json) {
+
+    return (!/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase()));
+}
+
 
 
 function uniqueIDs(json){
@@ -1462,6 +1500,25 @@ function tooManySeqs(json, seqLimit) {
     }
 
     return (json.length > seqLimit);
+}
+
+function tooManyHeaders(json, headerLimit) {
+    if (!json) {
+        return;
+    }
+
+    if (!seqLimit) {
+        return;
+    }
+
+    var count = 0;
+
+    for (var i = 0; i < json.length; i++) {
+        if(json[i].charAt(0) == '<')
+            count++;
+    }
+
+    return (count > headerLimit);
 }
 
 
@@ -1814,8 +1871,17 @@ function onlyDashes(json) {
                         case "ALIGNMENT":
                             result = validateAlignment(json);
                             break;
-                        case "TYPE":
-                            result = typeOfSequence(json);
+                        case "HEADER":
+                            result = validateHeader(json);
+                            break;
+                        case "DNA":
+                            result = validateDNA(json);
+                            break;
+                        case "RNA":
+                            result = validateRNA(json);
+                            break;
+                        case "PROTEIN":
+                            result = validateProtein(json);
                             break;
                         case "NUMBERS":
                             result = getNumberOfFastaSeqs(seqs);
@@ -1837,6 +1903,9 @@ function onlyDashes(json) {
                             break;
                         case "MAXSEQNUMBER":
                             result = tooManySeqs(json, parameter1);
+                            break;
+                        case "MAXHEADERNUMBER":
+                            result = tooManyHeaders(json, parameter1);
                             break;
                         case "SAMELENGTH":
                             result = sameSeqLength(json);
