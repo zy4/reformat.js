@@ -297,6 +297,10 @@ function validateClustal (clustal) {
             continue;
         }
 
+        if (_contains(sequence, "*")) {
+            continue;
+        }
+
         if (headerSeen === true) {
             sequence = sequence.trim();
             lines = sequence.split(/\s+/g);
@@ -325,8 +329,8 @@ function validateClustal (clustal) {
                         console.log('input is not an alignment');
                         return false; }
 
-                    if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(clustalObj[j].seq)) {
-                        throw new Error("Alignment contains invalid symbols.");
+                    if (/[^\-\\.:*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(clustalObj[j].seq)) {
+                        console.warn("Alignment contains invalid symbols.");
                         return false;
                     }
                 }
@@ -451,11 +455,14 @@ function validateHeader(json) {
         return false;
     }
 
+    var newlines = json.split('\n');
+
+
     for (var i = 0; i < json.length; i++) {
-        if (json[i].charAt(0) == '<'){
+        if (newlines[i].startsWith('>'))
             return true;
-        }
     }
+
     return false;
 }
 
@@ -1418,6 +1425,7 @@ function json2genbank(json){
 }
 
 
+
 //TODO delete this function and find more convenient/failproof way of displaying type in json2genbank & json2nexus
 
 function typeOfSequence(json) {
@@ -1426,11 +1434,11 @@ function typeOfSequence(json) {
         return;
     }
 
-    if (!/[^\-\\.*AGTC\s]/i.test(json[0].seq.toUpperCase())){
+    if (!/[^\-\\AGTC\s]/i.test(json[0].seq.toUpperCase())){
         return "DNA"
     }
 
-    if (!/[^\-\\.*AGUC\s]/i.test(json[0].seq.toUpperCase())){
+    if (!/[^\-\\AGUC\s]/i.test(json[0].seq.toUpperCase())){
         return "RNA"
     }
 
@@ -1448,7 +1456,7 @@ function validateDNA(json) {
         return;
     }
 
-    return (!/[^\-\\.*AGTC\s]/i.test(json[0].seq.toUpperCase()));
+    return (!/[^\-\\AGTC\s]/i.test(json[0].seq.toUpperCase()));
 }
 
 
@@ -1530,14 +1538,15 @@ function tooManyHeaders(json, headerLimit) {
         return;
     }
 
-    if (!seqLimit) {
+    if (!headerLimit) {
         return;
     }
 
     var count = 0;
+    var newlines = json.split('\n');
 
     for (var i = 0; i < json.length; i++) {
-        if(json[i].charAt(0) == '<')
+        if(newlines[i].startsWith(">"))
             count++;
     }
 
