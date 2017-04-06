@@ -1565,7 +1565,9 @@ function validateLine(line) {
         return;
     }
 
-    return ((line.length === 1) || (!/\s/i.test(line)));
+    var newlines = line.split('\n');
+
+    return ((newlines.length === 1));
 }
 
 function uniqueIDs(json){
