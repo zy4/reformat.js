@@ -288,6 +288,9 @@ function validateFastaHeaders(fas) {
 
         splittedStrings = splittedStrings.filter(Boolean);
 
+        if(splittedStrings.length === 1 && splittedStrings[0].charAt(0) !== ">")
+            return false;
+
         for (; i < splittedStrings.length; i++) {
 
             // immediately remove trailing spaces
@@ -298,27 +301,12 @@ function validateFastaHeaders(fas) {
                 return false;
             }
 
-            //reinsert seperator
-            var seq = ">" + splittedStrings[i];
-
-            // split on newlines...
-            var lines = seq.split('\n');
-
-            // check for header
-            if (seq[0] == '>') {
-                // remove one line, starting at the first position
-                lines.splice(0, 1);
-
-            }
-
-            // join the array back into a single string without newlines and
-
-            seq = lines.join('').trim();
-
+            if (/^>/.test(splittedStrings[i]))
+                return true;
         }
 
 
-        return true;
+        return false;
 }
 
 function validateClustal (clustal) {
@@ -542,6 +530,35 @@ function json2fastaHeaders(json) {
     return result;
 }
 
+function line2json(line) {
+
+    var newlines  = line.split('\n'),
+        //remove empty lines
+        newlines = newlines.filter(Boolean);
+
+    var result = [], element;
+
+    for(var i = 0; i < newlines.length; i++){
+        element = {};
+        element.name = newlines[0];
+        result.push(element);
+    }
+
+    return result;
+}
+
+function json2line(json) {
+
+    if (!json) {
+        return false;
+    }
+
+    var result = json[0].name;
+
+    result = result.replace(/^\s*\n/gm, "")
+
+    return result;
+}
 
 function fasta2json(fasta) {
 
@@ -1542,13 +1559,13 @@ function validateProtein(json) {
     return (!/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase()));
 }
 
-function continuousLine(json) {
+function validateLine(line) {
 
-    if (!json) {
+    if (!line) {
         return;
     }
 
-    return ((json.length === 0) || (!/\s/i.test(json)));
+    return ((line.length === 1) || (!/\s/i.test(line)));
 }
 
 function uniqueIDs(json){
@@ -1611,8 +1628,6 @@ function tooManyHeaders(json, headerLimit) {
         if (json[i].name !== "")
             count++;
     }
-
-    console.log(count);
 
     return (count > headerLimit);
 }
@@ -1856,6 +1871,8 @@ function onlyDashes(json) {
                     return "Stockholm";
                 else if(validateFastaHeaders(seqs))
                     return "FastaHeaders";
+                else if (validateLine(seqs))
+                    return "Line";
                 else
                     return "";
             }
@@ -1888,6 +1905,9 @@ function onlyDashes(json) {
                     var json = [];
                     var result = "";
                     switch(format) {
+                        case "Line":
+                            json = line2json(seqs);
+                            break;
                         case "Fasta":
                             json = fasta2json(seqs);
                             break;
@@ -1922,6 +1942,9 @@ function onlyDashes(json) {
                     }
 
                     switch(operation) {
+                        case "LINE":
+                            result = json2line(json);
+                            break;
                         case "FASTA":
                             result = json2fasta(json);
                             break;
