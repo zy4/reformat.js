@@ -227,7 +227,7 @@ function validateFasta(fasta) {
         }
 
         var splittedStrings = fasta.split('\n>'),
-            i = 1;
+            i = 0;
 
         for (; i < splittedStrings.length; i++) {
 
