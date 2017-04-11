@@ -277,38 +277,6 @@ function validateFasta(fasta) {
     return false;
 }
 
-function validateFastaHeaders(fas) {
-
-    if (!fas) {
-        return false;
-    }
-
-        var splittedStrings = fas.split('\n>'),
-            i = 0;
-
-        splittedStrings = splittedStrings.filter(Boolean);
-
-        if(splittedStrings.length === 1 && splittedStrings[0].charAt(0) !== ">")
-            return false;
-
-        for (; i < splittedStrings.length; i++) {
-
-            // immediately remove trailing spaces
-            splittedStrings[i] = splittedStrings[i].trim();
-
-            //check if header contains at least one char
-            if(splittedStrings[i].length < 1){
-                return false;
-            }
-
-            if (/^>/.test(splittedStrings[i]))
-                return true;
-        }
-
-
-        return false;
-}
-
 function validateClustal (clustal) {
 
     if(!clustal) { return false; }
@@ -491,71 +459,28 @@ function json2fasta(json) {
     return result;
 }
 
-function fastaHeaders2json(fas) {
 
-    var newlines  = fas.split('\n'),
-        //remove empty lines
-        newlines = newlines.filter(Boolean);
-
-    var result = [], element;
-
-    for(var i = 0; i < newlines.length;){
-        element = {};
-        element.name = '';
-        if(newlines[i].startsWith('>')) {
-            element.name = newlines[i];
-
-        }
-        i++;
-        result.push(element);
-    }
-
-    return result;
-}
-
-function json2fastaHeaders(json) {
-
-    if (!json) {
+function extractHeaders(seqs) {
+    if (!seqs) {
         return false;
     }
 
-    var result = '';
-    for (var i = 0; i < json.length; i++) {
-        result += json[i].name;
-        result += "\n";
-    }
+    result = "";
 
-    result = result.replace(/^\s*\n/gm, "")
-
-    return result;
-}
-
-function line2json(line) {
-
-    var newlines  = line.split('\n'),
-        //remove empty lines
-        newlines = newlines.filter(Boolean);
-
-    var result = [], element;
-
-    for(var i = 0; i < newlines.length; i++){
-        element = {};
-        element.name = newlines[0];
-        result.push(element);
-    }
-
-    return result;
-}
-
-function json2line(json) {
-
-    if (!json) {
+    if(!/>/.test(seqs))
         return false;
-    }
 
-    var result = json[0].name;
 
-    result = result.replace(/^\s*\n/gm, "")
+
+    seqs = seqs.split(">");
+
+
+
+    seqs.map(function(data){
+        data = data.split("\n");
+        result += data[0] + "\n";
+    });
+
 
     return result;
 }
@@ -1564,7 +1489,6 @@ function validateLine(line) {
     if (!line) {
         return;
     }
-
     var newlines = line.split('\n');
 
     return ((newlines.length === 1));
@@ -1572,7 +1496,7 @@ function validateLine(line) {
 
 function uniqueIDs(json){
     if (!json) {
-        return;
+        return true;
     }
 
     var identifiers = [];
@@ -1594,7 +1518,7 @@ function uniqueIDs(json){
 
 function inputSmallEnough(json, charLimit) {
     if (!json) {
-        return;
+        return true;
     }
     if (!charLimit) {
         return;
@@ -1871,10 +1795,6 @@ function onlyDashes(json) {
                     return "PIR";
                 else if(validateStockholm(seqs))
                     return "Stockholm";
-                else if(validateFastaHeaders(seqs))
-                    return "FastaHeaders";
-                else if (validateLine(seqs))
-                    return "Line";
                 else
                     return "";
             }
@@ -1907,9 +1827,6 @@ function onlyDashes(json) {
                     var json = [];
                     var result = "";
                     switch(format) {
-                        case "Line":
-                            json = line2json(seqs);
-                            break;
                         case "Fasta":
                             json = fasta2json(seqs);
                             break;
@@ -1937,16 +1854,10 @@ function onlyDashes(json) {
                         case "Stockholm":
                             json = stockholm2json(seqs);
                             break;
-                        case "FastaHeaders":
-                            json = fastaHeaders2json(seqs);
-                            break;
                         default:json = null;
                     }
 
                     switch(operation) {
-                        case "LINE":
-                            result = json2line(json);
-                            break;
                         case "FASTA":
                             result = json2fasta(json);
                             break;
@@ -1974,8 +1885,8 @@ function onlyDashes(json) {
                         case "STOCKHOLM":
                             result = json2stockholm(json);
                             break;
-                        case "FASTAHEADERS":
-                            result = json2fastaHeaders(json);
+                        case "EXTRACTHEADERS":
+                            result = extractHeaders(seqs);
                             break;
                         case "UC":
                             result = upperCase(json);
@@ -1999,7 +1910,7 @@ function onlyDashes(json) {
                             result = validateAlignment(json);
                             break;
                         case "LINE":
-                            result = continuousLine(json);
+                            result = validateLine(seqs);
                             break;
                         case "DNA":
                             result = validateDNA(json);
