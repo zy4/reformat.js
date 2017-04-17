@@ -1527,6 +1527,21 @@ function inputSmallEnough(json, charLimit) {
     return (JSON.stringify(json).length < charLimit);
 }
 
+function seqSmallEnough(json, charLimit) {
+    if (!json) {
+        return true;
+    }
+    if (!charLimit) {
+        return;
+    }
+
+    for (var i = 0; i<json.length; i++)  {
+        if(json[i].seq.length > charLimit)
+            return false;
+    }
+    return true;
+}
+
 
 function tooManySeqs(json, seqLimit) {
     if (!json) {
@@ -1938,6 +1953,9 @@ function onlyDashes(json) {
                             break;
                         case "MAXLENGTH":
                             result = inputSmallEnough(json, parameter1);
+                            break;
+                        case "MAXSEQLENGTH":
+                            result = seqSmallEnough(json, parameter1);
                             break;
                         case "MAXSEQNUMBER":
                             result = tooManySeqs(json, parameter1);
