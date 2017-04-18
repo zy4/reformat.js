@@ -1532,7 +1532,7 @@ function seqSmallEnough(json, charLimit) {
         return true;
     }
     if (!charLimit) {
-        return;
+        return true;
     }
 
     for (var i = 0; i<json.length; i++)  {
