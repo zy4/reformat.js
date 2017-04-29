@@ -470,11 +470,7 @@ function extractHeaders(seqs) {
     if(!/>/.test(seqs))
         return false;
 
-
-
     seqs = seqs.split(">");
-
-
 
     seqs.map(function(data){
         data = data.split("\n");
@@ -1490,6 +1486,24 @@ function validateLine(line) {
     return ((newlines.length === 1));
 }
 
+function validateAtoms (seqs) {
+    if (!seqs) {
+        return;
+    }
+
+    var atomCounter = 0;
+
+    data = seqs.split("\n");
+
+    for(var i = 0; i<data.length; i++) {
+        if (/^ATOM/.test(data[i]) && atomCounter < 26)
+            atomCounter++;
+        else if (atomCounter == 26)
+            return true;
+    }
+    return false;
+}
+
 function uniqueIDs(json){
     if (!json) {
         return true;
@@ -1601,7 +1615,6 @@ function starCheck(json) {
     }
 
     for (var i = 0; i < json.length; i++) {
-        console.log(json[i].seq);
         if (!/\*$/.test(json[i].seq)) {
             return false;
         }
@@ -1981,6 +1994,9 @@ function starCheck(json) {
                             break;
                         case "STAR":
                             result = starCheck(json);
+                            break;
+                        case "ATOMS":
+                            result = validateAtoms(seqs);
                             break;
                         case "UNIQUEIDS":
                             result = uniqueIDs(json);
