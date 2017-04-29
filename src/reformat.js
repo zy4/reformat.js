@@ -238,9 +238,6 @@ function validateFasta(fasta) {
             if(splittedStrings[i].length < 1){
                 return false;
             }
-            // only pir format has a ';' as the 4. char
-            if(splittedStrings[i].charAt(3) == ';')
-                return false;
 
             //reinsert seperator
             var seq = ">" + splittedStrings[i];
@@ -453,6 +450,9 @@ function json2fasta(json) {
         result += json[i].name;
         result += "\n";
         result += formatLongSeq(json[i].seq,60);
+        //removes stars from the end of sequences, as they are specific to the pir format
+        if(/\*$/.test(json[i].seq))
+            result = result.replace(/\*$/, "");
         result += "\n";
     }
 
@@ -564,13 +564,13 @@ function validatePhylip(phylip){
         // check for wrong symbols
         for (var i = 0; i < n; i++) {
             if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(seq[i])) {
-                throw new Error("Alignment contains invalid symbols.");
+                console.warn("Alignment contains invalid symbols.");
                 return false;
             }
             // check for number of symbols
 
             else if (seq[i].length != m) {
-                throw new Error("Number of sequence does not match with the header.");
+                console.warn("Number of sequence does not match with the header.");
                 return false;
             }
 
@@ -696,7 +696,7 @@ function validateStockholm(stockholm){
                 element.seq = split_seq[1];
 
                 if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element.seq)) {
-                    throw new Error("Alignment contains invalid symbols.");
+                    console.warn("Alignment contains invalid symbols.");
                     return false;
                 }
                 aln.push(element);
@@ -960,7 +960,7 @@ function pir2json(pir){
         element.seq = '';
         while(i < newlines.length && !newlines[i].startsWith('>')) {
             if(!newlines[i].startsWith(';'))
-                element.seq += newlines[i].slice(0, -1);
+                element.seq += newlines[i];//.slice(0, -1);
             i++;
         }
         result.push(element);
@@ -1004,10 +1004,9 @@ function validatePir(pir){
             return false;
         }
         if (/[^\-\\.\\*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
-            throw new Error("Alignment contains invalid symbols.");
+            console.warn("Alignment contains invalid symbols.");
             return false;
         }
-
     }
 
     var newlines  = pir.split('>'),
@@ -1018,9 +1017,6 @@ function validatePir(pir){
         // remove whitespace
 
         newlines[i] = newlines[i].replace(/\s/g, "");
-        if (!newlines[i].endsWith('*')) {
-            return false;
-        }
     }
 
     return true;
@@ -1063,7 +1059,7 @@ function validateEMBL(embl) {
                 return false;
 
             if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
-                throw new Error("Alignment contains invalid symbols.");
+                console.warn("Alignment contains invalid symbols.");
                 return false;
             }
         }
@@ -1599,6 +1595,20 @@ function onlyDashes(json) {
         return false;
 }
 
+function starCheck(json) {
+    if (!json) {
+        return;
+    }
+
+    for (var i = 0; i < json.length; i++) {
+        console.log(json[i].seq);
+        if (!/\*$/.test(json[i].seq)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 
             function searchRegex(json, regex, flag) {
                 if (!json) {
@@ -1968,6 +1978,9 @@ function onlyDashes(json) {
                             break;
                         case "DASHES":
                             result = onlyDashes(json);
+                            break;
+                        case "STAR":
+                            result = starCheck(json);
                             break;
                         case "UNIQUEIDS":
                             result = uniqueIDs(json);
