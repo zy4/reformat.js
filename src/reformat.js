@@ -216,6 +216,7 @@ function validateFasta(fasta) {
 
     // checks double occurrences of ">" in the header
 
+    fasta = fasta.replace(/^\n+/, '');
     var newlines = fasta.split('\n');
     if (!newlines[0].startsWith("#") && newlines[0].startsWith(">")) {
 
