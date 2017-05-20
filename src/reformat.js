@@ -236,11 +236,11 @@ function validateFasta(fasta) {
             splittedStrings[i] = splittedStrings[i].trim();
 
             //check if header contains at least one char
-            if(splittedStrings[i].length < 1){
+            if (splittedStrings[i].length < 1) {
                 return false;
             }
 
-            //reinsert seperator
+            //reinsert separator
             var seq = ">" + splittedStrings[i];
 
             // split on newlines...
@@ -256,23 +256,23 @@ function validateFasta(fasta) {
             // join the array back into a single string without newlines and
 
             seq = lines.join('').trim();
-	    
-	    if(0 === seq.length || !seq) {
+
+            if (0 === seq.length || !seq) {
                 console.warn("no sequence found for header");
                 return false;
             }
 
-            if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(seq.toUpperCase())) {
+            if (/[^-.*A-Z\s]/i.test(seq.toUpperCase())) {
                 return false;
             }
 
         }
 
-
         return true;
-
     }
-    return false;
+
+    //check if there are any headers or illegal characters at all (if not it might be intended as a single-line sequence)
+    return !(/[^-.*A-Z\s]/i.test(fasta));
 }
 
 function validateClustal (clustal) {
@@ -325,7 +325,7 @@ function validateClustal (clustal) {
                         console.log('input is not an alignment');
                         return false; }
 
-                    if (/[^\-\\.:*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(clustalObj[j].seq)) {
+                    if (/[^\-\\.:*A-Z\s]/i.test(clustalObj[j].seq)) {
                         console.warn("Alignment contains invalid symbols.");
                         return false;
                     }
@@ -560,7 +560,7 @@ function validatePhylip(phylip){
 
         // check for wrong symbols
         for (var i = 0; i < n; i++) {
-            if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(seq[i])) {
+            if (/[^\-\\.*A-Z\s]/i.test(seq[i])) {
                 console.warn("Alignment contains invalid symbols.");
                 return false;
             }
@@ -692,7 +692,7 @@ function validateStockholm(stockholm){
                 element = {};
                 element.seq = split_seq[1];
 
-                if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element.seq)) {
+                if (/[^\-\\.*A-Z\s]/i.test(element.seq)) {
                     console.warn("Alignment contains invalid symbols.");
                     return false;
                 }
@@ -918,7 +918,7 @@ function validatea3m(a3m) {
                 return false;
             }
 
-            if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+            if (/[^\-\\.*A-Z\s]/i.test(element[i].seq)) {
                 return false;
             }
 
@@ -1000,7 +1000,7 @@ function validatePir(pir){
         if (element[i].name.charAt(2) != ";") {
             return false;
         }
-        if (/[^\-\\.\\*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+        if (/[^\-\\.*A-Z\s]/i.test(element[i].seq)) {
             console.warn("Alignment contains invalid symbols.");
             return false;
         }
@@ -1055,7 +1055,7 @@ function validateEMBL(embl) {
             else if(element[i].name == "")
                 return false;
 
-            if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+            if (/[^\-\\.*A-Z\s]/i.test(element[i].seq)) {
                 console.warn("Alignment contains invalid symbols.");
                 return false;
             }
@@ -1220,7 +1220,7 @@ function validateNexus(nexus) {
         return false;
     }
     for(var i = 0; i < element.length; i++){
-        if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+        if (/[^\-\\.*A-Z\s]/i.test(element[i].seq)) {
             throw new Error("Sequence contains invalid symbols.");
             return false;
         }
@@ -1318,7 +1318,7 @@ function validateGenbank(genbank){
     element = genbank2json(genbank);
 
     for(var i =0; i < element.length; i++){
-        if (/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(element[i].seq)) {
+        if (/[^\-\\.*A-Z\s]/i.test(element[i].seq)) {
             throw new Error("Sequence contains invalid symbols.");
             return false;
         }
@@ -1440,7 +1440,7 @@ function typeOfSequence(json) {
         return "RNA"
     }
 
-    if (!/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase())){
+    if (!/[^\-\\.*A-Z\s]/i.test(json[0].seq.toUpperCase())){
         return "Protein"
     }
 
@@ -1454,7 +1454,7 @@ function validateDNA(json) {
         return;
     }
 
-    return (!/[^\-\\AGTC\s]/i.test(json[0].seq.toUpperCase()));
+    return !/[^\-\\AGTC\s]/i.test(json[0].seq.toUpperCase());
 }
 
 
@@ -1464,7 +1464,7 @@ function validateRNA(json) {
         return;
     }
 
-    return (!/[^\-\\.*AGUC\s]/i.test(json[0].seq.toUpperCase()));
+    return !/[^\-\\.*AGUC\s]/i.test(json[0].seq.toUpperCase());
 }
 
 
@@ -1474,7 +1474,7 @@ function validateProtein(json) {
         return;
     }
 
-    return (!/[^\-\\.*ABCDEFGHIJKLMNOPQRSTUVWXYZ\s]/i.test(json[0].seq.toUpperCase()));
+    return !/[^\-\\.*A-Z\s]/i.test(json[0].seq.toUpperCase());
 }
 
 function validateLine(line) {
