@@ -1497,9 +1497,9 @@ function validateAtoms (seqs) {
     data = seqs.split("\n");
 
     for(var i = 0; i<data.length; i++) {
-        if (/^ATOM/.test(data[i]) && atomCounter < 26)
+        if (/^ATOM/.test(data[i]) && atomCounter < 28)
             atomCounter++;
-        else if (atomCounter == 26)
+        else if (atomCounter == 28)
             return true;
     }
     return false;
