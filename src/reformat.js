@@ -1893,7 +1893,8 @@ function starCheck(json) {
                         case "Stockholm":
                             json = stockholm2json(seqs);
                             break;
-                        default:json = null;
+                        default:
+                            break;
                     }
 
                     switch(operation) {
@@ -2002,7 +2003,7 @@ function starCheck(json) {
                         case "UNIQUEIDS":
                             result = uniqueIDs(json);
                             break;
-                        default: result = null;
+                        default:
                             break;
                     }
                     return result;
