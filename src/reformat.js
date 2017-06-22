@@ -1449,13 +1449,17 @@ function typeOfSequence(json) {
 
 
 function validateDNA(json) {
-
     if(!json) {
         return;
     }
-
-    return !/[^\-\\AGTC\s]/i.test(json[0].seq.toUpperCase());
+for(var elem=0;elem< json.length; elem++){
+    if(/[^\-\\AGTC\s]/i.test(json[elem].seq.toUpperCase())) {
+        return false;
+    }
 }
+    return true;
+}
+
 
 
 function validateRNA(json) {
@@ -1464,7 +1468,13 @@ function validateRNA(json) {
         return;
     }
 
-    return !/[^\-\\.*AGUC\s]/i.test(json[0].seq.toUpperCase());
+    for(var elem=0;elem< json.length; elem++){
+        if(/[^\-\\.*AGUC\s]/i.test(elem.seq.toUpperCase())) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 
@@ -1473,9 +1483,29 @@ function validateProtein(json) {
     if(!json) {
         return;
     }
+    for(var elem=0;elem< json.length; elem++){
+        if(!/[^\-\.\\AGTC\s]/i.test(json[elem].seq.toUpperCase())) {
 
-    return !/[^\-\\.*A-Z\s]/i.test(json[0].seq.toUpperCase());
+                return false;
+        }
+    }
+    return true;
 }
+
+function validateProteinLetters(json) {
+
+    if(!json) {
+        return;
+    }
+
+    for(var elem=0;elem< json.length; elem++){
+        if(/[^\-\\.*A-Z\s]/i.test(json[elem].seq.toUpperCase())) {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 function validateLine(line) {
 
@@ -1893,8 +1923,7 @@ function starCheck(json) {
                         case "Stockholm":
                             json = stockholm2json(seqs);
                             break;
-                        default:
-                            break;
+                        default:json = null;
                     }
 
                     switch(operation) {
@@ -1961,6 +1990,9 @@ function starCheck(json) {
                         case "PROTEIN":
                             result = validateProtein(json);
                             break;
+                        case "PROTEINLETTERS":
+                            result = validateProteinLetters(json);
+                            break;
                         case "NUMBERS":
                             result = getNumberOfFastaSeqs(seqs);
                             break;
@@ -2003,10 +2035,9 @@ function starCheck(json) {
                         case "UNIQUEIDS":
                             result = uniqueIDs(json);
                             break;
-                        default:
+                        default: result = null;
                             break;
                     }
                     return result;
                 };
             })( jQuery );
-
