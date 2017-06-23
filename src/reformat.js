@@ -478,7 +478,6 @@ function extractHeaders(seqs) {
         result += data[0] + "\n";
     });
 
-
     return result;
 }
 
@@ -495,9 +494,9 @@ function fasta2json(fasta) {
         element.name = '';
         if(newlines[i].startsWith('>')) {
             element.name = newlines[i].substring(1);
-
+            i++;
         }
-        i++;
+
         element.seq = '';
         while(i < newlines.length && !newlines[i].startsWith('>')) {
             if(!newlines[i].startsWith(';'))
@@ -506,11 +505,8 @@ function fasta2json(fasta) {
         }
         result.push(element);
     }
-
     return result;
-
 }
-
 
 function validatePhylip(phylip){
     if(!phylip)
@@ -1479,11 +1475,11 @@ function validateRNA(json) {
 
 
 function validateProtein(json) {
-
     if(!json) {
         return;
     }
     for(var elem=0;elem< json.length; elem++){
+
         if(!/[^\-\.\\AGTC\s]/i.test(json[elem].seq.toUpperCase())) {
 
                 return false;
