@@ -1480,13 +1480,29 @@ function validateProtein(json) {
     }
     for(var elem=0;elem< json.length; elem++){
 
-        if(!/[^\-\.\\AGTC\s]/i.test(json[elem].seq.toUpperCase())) {
+        if(!/[^\-\.\\AGTCU\s]/i.test(json[elem].seq.toUpperCase())) {
 
                 return false;
         }
     }
     return true;
 }
+
+
+function validateNucleotide(json) {
+    if(!json) {
+        return;
+    }
+    for(var elem=0;elem< json.length; elem++){
+
+        if(/[^\-\.\\AGTCU\s]/i.test(json[elem].seq.toUpperCase())) {
+
+            return false;
+        }
+    }
+    return true;
+}
+
 
 function validateProteinLetters(json) {
 
@@ -1985,6 +2001,9 @@ function starCheck(json) {
                             break;
                         case "PROTEIN":
                             result = validateProtein(json);
+                            break;
+                        case "NUCLEOTIDE":
+                            result = validateNucleotide(json);
                             break;
                         case "PROTEINLETTERS":
                             result = validateProteinLetters(json);
