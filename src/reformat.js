@@ -215,7 +215,8 @@ function validateFasta(fasta) {
 
 
     // checks double occurrences of ">" in the header
-
+    // Ignore #A3M# to allow A3M format input
+    fasta = fasta.replace(/^#A3M#/, '');
     fasta = fasta.replace(/^\n+/, '');
     var newlines = fasta.split('\n');
     if (!newlines[0].startsWith("#") && newlines[0].startsWith(">")) {
@@ -1509,9 +1510,9 @@ function validateProteinLetters(json) {
     if(!json) {
         return;
     }
-
+    //Ignore #A3M# to allow A3M format input
     for(var elem=0;elem< json.length; elem++){
-        if(/[^\-\\.*A-Z\s]/i.test(json[elem].seq.toUpperCase())) {
+        if(/[^\-\\.*A-Z\s(#A3M#)]/i.test(json[elem].seq.toUpperCase())) {
             return false;
         }
     }
