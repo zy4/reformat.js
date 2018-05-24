@@ -308,15 +308,9 @@ function validateClustal (clustal) {
                 return false;
             }
 
-            if (lines[1].length > 60) {
-
-                console.log('More than 60 sequence symbols in one line');
-                return false;
-            }
-
         } else {
             header = sequence.trim().replace(' ', '');
-            if (!header.startsWith('CLUSTAL')) {
+            if (!header.startsWith('CLUSTAL') && !header.startsWith('clustal')) {
 
                 console.log('No CLUSTAL Header');
                 return false;
