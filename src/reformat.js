@@ -1584,7 +1584,7 @@ function seqSmallEnough(json, charLimit) {
     }
 
     for (var i = 0; i<json.length; i++)  {
-        if(json[i].seq.length > charLimit)
+        if(json[i].seq.match(/[a-z]/gi).length > charLimit)
             return false;
     }
     return true;
@@ -1599,7 +1599,7 @@ function seqLongEnough(json, charLimit) {
     }
 
     for (var i = 0; i<json.length; i++)  {
-        if(json[i].seq.length < charLimit)
+        if(json[i].seq.match(/[a-z]/gi).length < charLimit)
             return false;
     }
     return true;
