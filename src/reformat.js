@@ -1590,6 +1590,20 @@ function seqSmallEnough(json, charLimit) {
     return true;
 }
 
+function seqLongEnough(json, charLimit) {
+    if (!json) {
+        return true;
+    }
+    if (!charLimit) {
+        return true;
+    }
+
+    for (var i = 0; i<json.length; i++)  {
+        if(json[i].seq.length < charLimit)
+            return false;
+    }
+    return true;
+}
 
 function tooManySeqs(json, seqLimit) {
     if (!json) {
@@ -2023,6 +2037,9 @@ function starCheck(json) {
                             break;
                         case "MAXSEQLENGTH":
                             result = seqSmallEnough(json, parameter1);
+                            break;
+			case "MINSEQLENGTH":
+                            result = seqLongEnough(json, parameter1);
                             break;
                         case "MAXSEQNUMBER":
                             result = tooManySeqs(json, parameter1);
