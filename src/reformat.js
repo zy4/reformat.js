@@ -1367,7 +1367,7 @@ function json2genbank(json){
     var result = '';
 
     for (var i = 0; i < json.length; i++) {
-        result += 'LOCUS\t\t\t\t\t\t' + json[i].seq.length + " bp\t\t\t" + typeOfSequence(json[i].seq) ;
+        result += 'LOCUS\t\t\t\t\t\t' + json[i].seq.length + " bp\t\t\t" + typeOfSequence(json) ;
         result += '\n';
         result += 'DEFINITION\t\t';
         result += json[i].name;
