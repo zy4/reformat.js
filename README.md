@@ -7,7 +7,7 @@ Reformat.js is a small javascript library for format conversions.
 
 ### Adopters
 
-Are you using circe? Please consider opening a pull request to list your organization here:
+Are you using reformat.js? Please consider opening a pull request to list your organization here:
 
 * [MPI Bioinformatics Toolkit](https://toolkit.tuebingen.mpg.de/)
 * [DNAVisualization.org](https://dnavisualization.org/)
